@@ -3,11 +3,10 @@ Rails.application.routes.draw do
   root 'home#about'
 
   namespace :api do
-    scope :v1 do
-      mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-          registrations: 'api/v1/auth/registrations'
-      }
-    end
-  end
+    resources :users, only: [:index, :show]
+    mount_devise_token_auth_for 'User', at: 'auth', controllers: {
+        registrations: 'api/auth/registrations'
+    }
 
+  end
 end
