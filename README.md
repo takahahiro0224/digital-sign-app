@@ -8,22 +8,19 @@ dockerとdocker-compose必要 (macならDocker for macを準備)
 git clone https://github.com/takahahiro0224/digital-sign-app.git
 ```
 ```bash
-docker-compose run web rails new . --force --database=mysql --webpack=vue --skip-coffee
-```
-```bash
-sed -i ".bak" -e "s/host: localhost/host: webpacker/g" config/webpacker.yml
-```
-```bash
 docker-compose build
 ```
-```
+```bash
 docker-compose up
 ```
-#### DB作成
+#### DB作成・マイグレーション
 ```bash
 docker-compose run web rails db:create
 ```
-#### フロントエンド
+```bash
+docker-compose run web rails db:migrate
+```
+#### フロントエンド(改定中）
 conflictなど起きたらとりあえずyesで
 ```bash
 docker-compose run web rails webpacker:install
@@ -46,8 +43,10 @@ docker-compose up
 ```bash
 docker-compose stop
 ```
+## トラブルなど
+#### 適宜コンテナの再起動、再ビルド、Dockerの再起動を試してみてください
 
-#### shプロセスに入る(このプロセス内でrailsコマンドなど行う)
+#### bashプロセスに入る(このプロセス内でrailsコマンドなど行う)
 ```bash
 docker exec -it digital-sign-app_web_1 /bin/bash
 ```
