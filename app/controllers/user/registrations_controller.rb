@@ -14,7 +14,7 @@ class User::RegistrationsController < Devise::RegistrationsController
    def create
      build_resource(sign_up_params)
      if resource.save
-       sign_in_and_redirect resource
+       sign_in_and_redirect dashbord_path
      else
        clean_up_passwords resource
        render :new
