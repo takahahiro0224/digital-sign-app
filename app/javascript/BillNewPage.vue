@@ -24,7 +24,7 @@ export default {
   methods: {
     createBill: function() {
       axios
-        .post('/api/users/1/bills', this.bill)
+        .post(`/api/users/${user.id}/bills`, this.bill)
         .then(response => {
           let b = response.data;
           this.$router.push({ name: 'BillDetailPage', params: { id: b.id } });

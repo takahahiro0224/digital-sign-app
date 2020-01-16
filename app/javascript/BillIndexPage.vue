@@ -51,7 +51,7 @@ export default {
       }
 
       axios
-        .delete(`/api/users/1/bills/${this.deleteTarget}`)
+        .delete(`/api/users/${user.id}/bills/${this.deleteTarget}`)
         .then(response => {
           this.deleteTarget = -1;
           this.updateBills();
@@ -65,7 +65,7 @@ export default {
     },
     updateBills: function() {
       axios
-        .get('/api/users/1/bills.json')
+        .get(`/api/users/${user.id}/bills.json`)
         .then(response => (this.bills = response.data))
     }
   }

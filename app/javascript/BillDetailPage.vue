@@ -24,7 +24,7 @@ export default {
   },
   mounted () {
     axios
-      .get(`/api/users/1/bills/${this.$route.params.id}.json`)
+      .get(`/api/users/${user.id}/bills/${this.$route.params.id}.json`)
       .then(response => (this.bill = response.data))
   }
 }
