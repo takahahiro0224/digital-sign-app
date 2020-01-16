@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show]
+    before_action :set_bill, only: [:show, :update, :destroy]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -9,7 +9,7 @@ module Api
     end
 
     def index
-      bills = @user.bills
+      bills = @user.bills.select(:id, :title, :price_cents)
       render json: bills
     end
 
@@ -21,8 +21,22 @@ module Api
       @bill = @user.bills.build(bill_params)
       if @bill.save
         render json: @bill, status: :created
+      else
+        render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
       end
+    end
 
+    def update
+      if @bill.update(bill_params)
+        head :no_content
+      else
+        render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @bill.destroy!
+      head :no_content
     end
 
     protected
@@ -36,7 +50,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:title, :description, :user, :price_cents, :currency, :paid)
+        params.require(:bill).permit(:id, :user_id, :title, :description, :price_cents, :currency, :paid)
       end
   end
 end

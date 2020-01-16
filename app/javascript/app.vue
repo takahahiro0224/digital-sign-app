@@ -9,11 +9,23 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import BillIndexPage from 'BillIndexPage.vue'
+import BillDetailPage from 'BillDetailPage.vue'
+import BillNewPage from 'BillNewPage.vue'
+import BillEditPage from 'BillEditPage'
 
 const router = new VueRouter({
   routes: [
     { path: '/',
-      component: BillIndexPage  }
+      component: BillIndexPage  },
+    { path: '/bills/:id(\\d+)',
+      name: 'BillDetailPage',
+      component: BillDetailPage },
+    { path: '/bills/new',
+      name: 'BillNewPage',
+      component: BillNewPage },
+    { path: '/bills/:id(\\d+)/edit',
+      name: 'BillEditPage',
+      component: BillEditPage }
   ]
 })
 
