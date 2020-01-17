@@ -1,5 +1,11 @@
 <template>
   <div>
+    <router-link to="/">
+      <a>一覧</a>
+    </router-link>
+    <router-link to="/bills/new">
+      <a>新規作成</a>
+    </router-link>
     <router-view></router-view>
   </div>
 </template>
