@@ -5,11 +5,24 @@
 // like app/views/layouts/application.html.erb.
 // All it does is render <div>Hello Vue</div> at the bottom of the page.
 
+//import Vue from 'vue'
+//import App from '../app.vue'
+
+//document.addEventListener('DOMContentLoaded', () => {
+  //const el = document.body.appendChild(document.createElement('hello'))
+  //const app = new Vue({
+    //el,
+    //render: h => h(App)
+  //})
+
+  //console.log(app)
+//})
+
 import Vue from 'vue'
 import App from '../app.vue'
 
 document.addEventListener('DOMContentLoaded', () => {
-  const el = document.body.appendChild(document.createElement('hello'))
+  const el = document.getElementById('app')
   const app = new Vue({
     el,
     render: h => h(App)
@@ -17,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.log(app)
 })
-
 
 // The above code uses Vue without the compiler, which means you cannot
 // use Vue to target elements in your existing html templates. You would
@@ -33,18 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // </div>
 
 
-// import Vue from 'vue/dist/vue.esm'
-// import App from '../app.vue'
+//import Vue from 'vue/dist/vue.esm'
+//import App from '../app.vue'
 //
-// document.addEventListener('DOMContentLoaded', () => {
-//   const app = new Vue({
-//     el: '#hello',
-//     data: {
-//       message: "Can you say hello?"
-//     },
-//     components: { App }
-//   })
-// })
+//document.addEventListener('DOMContentLoaded', () => {
+  // const app = new Vue({
+    // components: { App }
+   //})
+ //})
 //
 //
 //

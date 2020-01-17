@@ -34,6 +34,7 @@ gem 'devise-i18n-views'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'rack-cors'
+gem 'money-rails', '~>1.12'
 
 gem 'bcrypt'
 
