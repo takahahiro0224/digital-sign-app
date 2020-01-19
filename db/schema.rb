@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_15_103745) do
+ActiveRecord::Schema.define(version: 2020_01_19_092422) do
 
   create_table "bills", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
@@ -20,6 +20,20 @@ ActiveRecord::Schema.define(version: 2020_01_15_103745) do
     t.string "currency", default: "JPY", null: false
     t.boolean "paid", default: false, null: false
     t.index ["user_id"], name: "index_bills_on_user_id"
+  end
+
+  create_table "debtors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "bill_id"
+    t.integer "friend_id"
+    t.index ["bill_id"], name: "index_debtors_on_bill_id"
+  end
+
+  create_table "friends", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "name", null: false
+    t.string "email", null: false
+    t.text "description"
+    t.index ["user_id"], name: "index_friends_on_user_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

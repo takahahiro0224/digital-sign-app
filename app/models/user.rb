@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :bills
+  has_many :friends
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :trackable, :omniauthable

@@ -10,20 +10,38 @@ module Api
 
     def index
       bills = @user.bills.select(:id, :title, :price_cents)
-      render json: bills
+      res = bills.all.map {|bill| bill.attributes}
+      res.each do |h|
+        friend_id = Bill.find(h["id"]).debtor&.first&.friend_id
+        friend_name = ""
+        if friend_id
+          friend_name = Friend.find(friend_id).name
+        end
+        h.store("debtor", friend_name)
+      end
+      render json: res.to_json
     end
 
+
+    # billとdebtorを組み合わせて返す
     def show
+      debtor_name = @bill.debtors&.first.name
       render json: @bill
     end
 
+    # Post params: {'bills': { }, 'friend':{ }}
     def create
-      @bill = @user.bills.build(bill_params)
-      if @bill.save
-        render json: @bill, status: :created
-      else
-        render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
+      ActiveRecord::Base.transaction do
+        @bill = @user.bills.new(bill_params)
+        @bill.save!
+        @friend = @user.friends.new(friend_params)
+        @friend.save!
+        @debtor = Debtor.new(bill_id: @bill.id, friend_id: @friend.id)
+        @debtor.save!
       end
+      render json: @bill, status: :created
+    rescue
+      render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
     end
 
     def update
@@ -47,6 +65,10 @@ module Api
 
       def set_bill
         @bill = @user.bills.where(id: params[:id]).first
+      end
+
+      def friend_params
+        params.require(:friend).permit(:id, :user_id, :name, :email, :description)
       end
 
       def bill_params

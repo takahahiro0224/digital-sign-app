@@ -7,15 +7,23 @@
     </div>
     <div>
       <label>タイトル</label>
-      <input v-model="bill.title" type="text">
+      <input v-model="params.bill.title" type="text">
     </div>
     <div>
       <label>説明</label>
-      <input v-model="bill.description" type="text">
+      <input v-model="params.bill.description" type="text">
     </div>
     <div>
       <label>金額</label>
-      <input v-model="bill.price_cents" type="number" min="0">
+      <input v-model="params.bill.price_cents" type="number" min="0">
+    </div>
+    <div>
+      <label>貸した人の名前</label>
+      <input v-model="params.friend.name" type="text">
+    </div>
+    <div>
+      <label>貸した人のメールアドレス</label>
+      <input v-model="params.friend.email" type="text">
     </div>
     <button type="submit">Commit</button>
   </form>
@@ -24,7 +32,10 @@
 <script>
 export default {
   props: {
-    bill: {},
+    params: {
+      bill: {},
+      friend: {}
+    },
     errors: ''
   }
 }

@@ -11,6 +11,7 @@
           <router-link to="bills/new">
             <a>新規作成</a>
           </router-link>
+        </li>
         <li><a href="#">Contact</a></li>
       </ul>
       <nav>
@@ -30,7 +31,7 @@
           </ul>
           <ul class="right hide-on-large-only">
             <li>
-              <a class="dropdown-button" href="#!" data-activates="dropdown">
+              <a class="dropdown-button" href="#" data-activates="dropdown">
                 Menu<i class="material-icons right">arrow_drop_down</i>
               </a>
             </li>
@@ -66,13 +67,18 @@ const router = new VueRouter({
   ]
 })
 
-
+// TODO: doropdownが効かないので対処する
+document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.dropdown-button');
+    var instances = M.Dropdown.init(elems);
+  });
 // ref. https://jp.vuejs.org/v2/guide/plugins.html#%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E4%BD%BF%E7%94%A8
 Vue.use(VueRouter)
 
 export default {
   router
 }
+
 </script>
 
 <style scoped>

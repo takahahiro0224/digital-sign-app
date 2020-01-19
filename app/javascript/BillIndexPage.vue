@@ -3,14 +3,14 @@
     <table>
       <tbody>
         <tr>
-          <th>ID</th>
           <th>タイトル</th>
           <th>金額</th>
+          <th>貸した人・請求する人</th>
         </tr>
         <tr v-for="b in bills" :key="b.id">
-          <td><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.id }}</router-link></td>
-          <td>{{ b.title }}</td>
+          <td><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.title }}</router-link></td>
           <td>{{ b.price_cents }}</td>
+          <td>{{ b.debtor }}</td>
           <td>
             <button @click="deleteTarget = b.id; showModal = true">削除</button>
           </td>
@@ -27,7 +27,6 @@
 import axios from 'axios';
 
 import Modal from 'Modal.vue';
-
 export default {
   components: {
     Modal
@@ -49,7 +48,6 @@ export default {
         console.warn('deleteTarget should be grater than zero.');
         return;
       }
-
       axios
         .delete(`/api/users/${user.id}/bills/${this.deleteTarget}`)
         .then(response => {
