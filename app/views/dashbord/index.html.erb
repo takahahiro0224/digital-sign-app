@@ -1,11 +1,11 @@
-<h2>Dashbord</h2>
-<p>こんにちは、<%= @current_user.username %>さん</p>
 
 <script>
     user = window.user = {};
     user.id = <%= @current_user.id %>;
+    user.name = <%= @current_user.username %>
 </script>
 <div id="app">
 </div>
+<p>ログイン中：<%= @current_user.username %>さん</p>
 <%= javascript_pack_tag 'hello_vue' %>
 

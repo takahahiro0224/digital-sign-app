@@ -2,16 +2,30 @@
   <div>
     <div>
       <ul id="dropdown" class="dropdown-content">
-        <li><a href="#">Top</a></li>
-        <li><a href="#">About</a></li>
+        <li>
+          <router-link to="/">
+            <a>一覧</a>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="bills/new">
+            <a>新規作成</a>
+          </router-link>
         <li><a href="#">Contact</a></li>
       </ul>
       <nav>
         <div class="nav-wrapper container">
-          <a href="/" class="brand-logo left">Todo Application</a>
+          <a href="/" class="brand-logo left">Debt Remainder</a>
           <ul class="right hide-on-med-and-down">
-            <li><a href="#">Top</a></li>
-            <li><a href="#">About</a></li>
+            <li>
+              <router-link to="/">
+                <a>一覧</a>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="bills/new">
+                <a>新規作成</a>
+              </router-link>
             <li><a href="#">Contact</a></li>
           </ul>
           <ul class="right hide-on-large-only">
