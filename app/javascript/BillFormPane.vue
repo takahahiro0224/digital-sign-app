@@ -18,6 +18,10 @@
       <input v-model="params.bill.price_cents" type="number" min="0">
     </div>
     <div>
+      <label>支払い期限日</label>
+      <input v-model="params.bill.payment_due_date" type="date">
+    </div>
+    <div>
       <label>貸した人の名前</label>
       <input v-model="params.friend.name" type="text">
     </div>

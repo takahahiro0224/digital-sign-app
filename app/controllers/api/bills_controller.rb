@@ -9,7 +9,7 @@ module Api
     end
 
     def index
-      bills = @user.bills.select(:id, :title, :price_cents)
+      bills = @user.bills.select(:id, :title, :price_cents, :payment_due_date)
       res = bills.all.map {|bill| bill.attributes}
       res.each do |h|
         friend_id = Bill.find(h["id"]).debtor&.first&.friend_id
@@ -25,11 +25,10 @@ module Api
 
     # billとdebtorを組み合わせて返す
     def show
-      debtor_name = @bill.debtors&.first.name
       render json: @bill
     end
 
-    # Post params: {'bills': { }, 'friend':{ }}
+    # Post params: {'bill': {...}, 'friend': {...}}
     def create
       ActiveRecord::Base.transaction do
         @bill = @user.bills.new(bill_params)
@@ -72,7 +71,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :title, :description, :price_cents, :currency, :paid)
+        params.require(:bill).permit(:id, :user_id, :title, :description, :price_cents, :currency, :payment_due_date, :paid)
       end
   end
 end

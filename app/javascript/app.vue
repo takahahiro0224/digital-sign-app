@@ -12,11 +12,15 @@
             <a>新規作成</a>
           </router-link>
         </li>
-        <li><a href="#">Contact</a></li>
+        <li>
+          <router-link to="contact">
+            <a>Contact</a>
+          </router-link>
+        </li>
       </ul>
       <nav>
         <div class="nav-wrapper container">
-          <a href="/" class="brand-logo left">Debt Remainder</a>
+          <a class="brand-logo left">Debt Remainder</a>
           <ul class="right hide-on-med-and-down">
             <li>
               <router-link to="/">
@@ -27,7 +31,12 @@
               <router-link to="bills/new">
                 <a>新規作成</a>
               </router-link>
-            <li><a href="#">Contact</a></li>
+            </li>
+            <li>
+              <router-link to="contact">
+                <a>Contact</a>
+              </router-link>
+            </li>
           </ul>
           <ul class="right hide-on-large-only">
             <li>
@@ -49,7 +58,8 @@ import VueRouter from 'vue-router'
 import BillIndexPage from 'BillIndexPage.vue'
 import BillDetailPage from 'BillDetailPage.vue'
 import BillNewPage from 'BillNewPage.vue'
-import BillEditPage from 'BillEditPage'
+import BillEditPage from 'BillEditPage.vue'
+import Contact from 'Contact.vue'
 
 const router = new VueRouter({
   routes: [
@@ -63,7 +73,10 @@ const router = new VueRouter({
       component: BillNewPage },
     { path: '/bills/:id(\\d+)/edit',
       name: 'BillEditPage',
-      component: BillEditPage }
+      component: BillEditPage },
+    { path: '/contact',
+      name: 'Contact',
+      component: Contact }
   ]
 })
 
