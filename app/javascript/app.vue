@@ -1,11 +1,43 @@
 <template>
   <div>
-    <router-link to="/">
-      <a>一覧</a>
-    </router-link>
-    <router-link to="/bills/new">
-      <a>新規作成</a>
-    </router-link>
+    <div>
+      <ul id="dropdown" class="dropdown-content">
+        <li>
+          <router-link to="/">
+            <a>一覧</a>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="bills/new">
+            <a>新規作成</a>
+          </router-link>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <nav>
+        <div class="nav-wrapper container">
+          <a href="/" class="brand-logo left">Debt Remainder</a>
+          <ul class="right hide-on-med-and-down">
+            <li>
+              <router-link to="/">
+                <a>一覧</a>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="bills/new">
+                <a>新規作成</a>
+              </router-link>
+            <li><a href="#">Contact</a></li>
+          </ul>
+          <ul class="right hide-on-large-only">
+            <li>
+              <a class="dropdown-button" href="#!" data-activates="dropdown">
+                Menu<i class="material-icons right">arrow_drop_down</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
     <router-view></router-view>
   </div>
 </template>
@@ -13,7 +45,6 @@
 <script>
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 import BillIndexPage from 'BillIndexPage.vue'
 import BillDetailPage from 'BillDetailPage.vue'
 import BillNewPage from 'BillNewPage.vue'
