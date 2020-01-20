@@ -1,5 +1,5 @@
 <template>
-  <bill-form-pane :errors="errors" :bill="bill" @submit="createBill"></bill-form-pane>
+  <bill-form-pane :errors="errors" :params="params" @submit="createBill"></bill-form-pane>
 </template>
 
 <script>
@@ -13,10 +13,15 @@ export default {
   },
   data () {
     return {
-      bill: {
-        title: '',
-        description: '',
-        price_cents: '',
+      params: {
+        bill: {
+          title: '',
+          price_cents: '',
+        },
+        friend: {
+          name: '',
+          email: ''
+        }
       },
       errors: ''
     }
@@ -24,7 +29,7 @@ export default {
   methods: {
     createBill: function() {
       axios
-        .post(`/api/users/${user.id}/bills`, this.bill)
+        .post(`/api/users/${user.id}/bills`, this.params)
         .then(response => {
           let b = response.data;
           this.$router.push({ name: 'BillDetailPage', params: { id: b.id } });
