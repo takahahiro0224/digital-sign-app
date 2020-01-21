@@ -4,8 +4,8 @@ if Rails.env.production?
     address: 'smtp.gmail.com',
     domain: 'gmail.com',
     port: 587,
-    user_name: 'taxman189@gmail.com',
-    password: 'takahiro189',
+    user_name: '',
+    password: '',
     authentication: 'plain',
     enable_starttls_auto: true
   }

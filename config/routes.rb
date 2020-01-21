@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   namespace :api do
     resources :users, only: [:index, :show] do
       resources :bills
+      resources :friends
     end
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/auth/registrations'

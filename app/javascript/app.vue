@@ -18,13 +18,18 @@
 
       <md-list>
         <md-list-item to="/">
-          <md-icon>move_to_inbox</md-icon>
+          <md-icon>home</md-icon>
           <span class="md-list-item-text">一覧</span>
         </md-list-item>
 
         <md-list-item to="/bills/new">
           <md-icon>add</md-icon>
           <span class="md-list-item-text">新規作成</span>
+        </md-list-item>
+
+        <md-list-item to="/friends">
+          <md-icon>account_box</md-icon>
+          <span class="md-list-item-text">友人</span>
         </md-list-item>
 
         <md-list-item to="/contact">
@@ -81,6 +86,7 @@ import BillDetailPage from 'BillDetailPage.vue'
 import BillNewPage from 'BillNewPage.vue'
 import BillEditPage from 'BillEditPage.vue'
 import Contact from 'Contact.vue'
+import Friends from 'FriendIndexPage.vue'
 
 // vue-material
 import 'vue-material/dist/vue-material.min.css'
@@ -102,7 +108,10 @@ const router = new VueRouter({
       component: BillEditPage },
     { path: '/contact',
       name: 'Contact',
-      component: Contact }
+      component: Contact },
+    { path: '/friends',
+      neme: 'Friends',
+      component: Friends }
   ]
 })
 
