@@ -1,24 +1,25 @@
 <template>
-  <div id="app">
-    <table>
-      <tbody>
-        <tr>
-          <th>タイトル</th>
-          <th>金額</th>
-          <th>貸した人・請求する人</th>
-          <th>支払い期限日</th>
-        </tr>
-        <tr v-for="b in bills" :key="b.id">
-          <td><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.title }}</router-link></td>
-          <td>{{ b.price_cents }}</td>
-          <td>{{ b.debtor }}</td>
-          <td>{{ b.payment_due_date }}</td>
-          <td>
-            <button @click="deleteTarget = b.id; showModal = true">削除</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div>
+    <md-table md-card>
+      <md-table-toolbar>
+        <h1 class="md-title">請求一覧</h1>
+      </md-table-toolbar>
+      <md-table-row>
+        <md-table-head>タイトル</md-table-head>
+        <md-table-head>金額</md-table-head>
+        <md-table-head>貸した人・請求する人</md-table-head>
+        <md-table-head>支払い期限日</md-table-head>
+      </md-table-row>
+      <md-table-row v-for="b in bills" :key="b.id">
+        <md-table-cell><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.title }}</router-link></md-table-cell>
+        <md-table-cell>{{ b.price_cents }}</md-table-cell>
+        <md-table-cell>{{ b.debtor }}</md-table-cell>
+        <md-table-cell>{{ b.payment_due_date }}</md-table-cell>
+        <md-table-cell>
+          <button @click="deleteTarget = b.id; showModal = true">削除</button>
+        </md-table-cell>
+      </md-table-row>
+    </md-table>    
     <modal v-if="showModal" @cancel="showModal = false" @ok="deleteBill(); showModal = false;">
       <div slot="body">削除しますか?</div>
     </modal>
@@ -77,4 +78,5 @@ p {
   font-size: 2em;
   text-align: center;
 }
+
 </style>
