@@ -38,6 +38,8 @@ module Api
         @debtor = Debtor.new(bill_id: @bill.id, friend_id: @friend.id)
         @debtor.save!
       end
+
+      NotificationMailer.send_notification_to_debtor(@user).deliver
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
