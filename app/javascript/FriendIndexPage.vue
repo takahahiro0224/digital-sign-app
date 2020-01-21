@@ -52,7 +52,7 @@ export default {
 
 <style lang="scss" scoped>
   .md-list {
-    width: 320px;
+    width: 400px;
     max-width: 100%;
     display: inline-block;
     vertical-align: top;

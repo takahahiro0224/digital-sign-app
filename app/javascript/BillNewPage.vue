@@ -7,6 +7,33 @@
         </md-card-header>
 
         <md-card-content>
+          <md-field v-if="optionFriends.length > 0">
+            <label>貸した人（登録済みの友達）</label>
+            <md-select v-model="params.friends" multiple>
+              <md-option v-for="friend in optionFriends" v-bind:key="friend.id" v-bind:value="friend.id">{{ friend.name }}</md-option>
+            </md-select>
+          </md-field>
+
+          <md-dialog :md-active.sync="showDialog">
+            <md-dialog-title>友達の登録</md-dialog-title>
+              <form novalidate class="md-layout" @submit="createFriend">
+                <md-field>
+                  <label>名前</label>
+                  <md-input v-model="newFriend.name" type="text"></md-input>
+                </md-field>
+                <md-field>
+                  <label>メールアドレス</label>
+                  <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
+                </md-field>
+                <md-dialog-actions>
+                <md-button class="md-primary" @click="showDialog = false">Cansel</md-button>
+                <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
+                </md-dialog-actions>
+              </form>
+            </md-dialog>
+
+          <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
+          
           <md-field>
             <label>タイトル</label>
             <md-input v-model="params.bill.title" type="text"></md-input>
@@ -24,33 +51,6 @@
           <md-datepicker v-model="params.bill.payment_due_date">
             <label>支払い期限日</label>
           </md-datepicker>
-
-          <md-field>
-            <label>貸した人（登録済みの友達）</label>
-            <md-select v-model="params.friends" multiple>
-              <md-option v-for="friend in optionFriends" v-bind:key="friend.id" v-bind:value="friend.id">{{ friend.name }}</md-option>
-            </md-select>
-          </md-field>
-
-          <md-dialog :md-active.sync="showDialog">
-            <md-dialog-title>友達の登録</md-dialog-title>
-              <form novalidate class="md-layout" @submit.prevenet="createFriend">
-                <md-field>
-                  <label>名前</label>
-                  <md-input v-model="newFriend.name" type="text"></md-input>
-                </md-field>
-                <md-field>
-                  <label>メールアドレス</label>
-                  <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
-                </md-field>
-                <md-dialog-actions>
-                <md-button class="md-primary" @click="showDialog = false">Cansel</md-button>
-                <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
-                </md-dialog-actions>
-              </form>
-            </md-dialog>
-
-          <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
         </md-card-content>
 
 
