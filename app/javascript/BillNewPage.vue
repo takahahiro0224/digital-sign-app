@@ -27,8 +27,8 @@
 
           <md-field>
             <label>貸した人（登録済みの友達）</label>
-            <md-select v-model="friends.id" multiple>
-              <md-option v-for="friend in friends" v-bind:key="friend.id" v-bind:value="friend.id">{{ friend.name }}</md-option>
+            <md-select v-model="params.friends" multiple>
+              <md-option v-for="friend in optionFriends" v-bind:key="friend.id" v-bind:value="friend.id">{{ friend.name }}</md-option>
             </md-select>
           </md-field>
 
@@ -50,12 +50,12 @@
               </form>
             </md-dialog>
 
-          <md-button class="md-primary md-raised" @click="showDialog = true">ともだちを登録する</md-button>
+          <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
         </md-card-content>
 
 
         <md-card-actions>
-          <md-button type="submit" class="md-primary">作成</md-button>
+          <md-button type="submit" class="md-primary md-raised">請求メモを作成</md-button>
         </md-card-actions>
       </md-card>
 
@@ -80,13 +80,10 @@ export default {
           title: '',
           price_cents: '',
         },
-        friend: {
-          name: '',
-          email: ''
-        }
+        friends: []
       },
+      optionFriends: [],
       showDialog: false,
-      friends: [],
       newFriend: {
         name: '',
         email: ''
@@ -115,7 +112,7 @@ export default {
     updateFriends: function() {
       axios
         .get(`/api/users/${user.id}/friends.json`)
-        .then(response => (this.friends = response.data))
+        .then(response => (this.optionFriends = response.data))
     },
     createFriend: function() {
       axios

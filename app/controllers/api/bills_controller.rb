@@ -28,18 +28,17 @@ module Api
       render json: @bill
     end
 
-    # Post params: {'bill': {...}, 'friend': {...}}
+    # Post params: {'bill': {...}, 'friends': [...]}
     def create
       ActiveRecord::Base.transaction do
         @bill = @user.bills.new(bill_params)
         @bill.save!
-        @friend = @user.friends.new(friend_params)
-        @friend.save!
-        @debtor = Debtor.new(bill_id: @bill.id, friend_id: @friend.id)
-        @debtor.save!
+        friend_params.each do |id|
+          @debtor = Debtor.new(bill_id: @bill.id, friend_id: id)
+          @debtor.save!
+        end
       end
-
-      NotificationMailer.send_notification_to_debtor(@user).deliver
+      # NotificationMailer.send_notification_to_debtor(@user).deliver
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
@@ -69,7 +68,7 @@ module Api
       end
 
       def friend_params
-        params.require(:friend).permit(:id, :user_id, :name, :email, :description)
+        params.require(:friends)
       end
 
       def bill_params
