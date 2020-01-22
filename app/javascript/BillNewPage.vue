@@ -26,7 +26,7 @@
                   <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
                 </md-field>
                 <md-dialog-actions>
-                <md-button class="md-primary" @click="showDialog = false">Cansel</md-button>
+                <md-button class="md-primary" @click="showDialog = false">Cancel</md-button>
                 <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
                 </md-dialog-actions>
               </form>
