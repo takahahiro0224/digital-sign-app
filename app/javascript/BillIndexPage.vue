@@ -5,13 +5,13 @@
         <h1 class="md-title">請求一覧</h1>
       </md-table-toolbar>
       <md-table-row>
-        <md-table-head>タイトル</md-table-head>
+        <md-table-head>カテゴリ</md-table-head>
         <md-table-head>金額</md-table-head>
         <md-table-head>貸した人・請求する人</md-table-head>
         <md-table-head>支払い期限日</md-table-head>
       </md-table-row>
       <md-table-row v-for="b in bills" :key="b.id">
-        <md-table-cell><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.title }}</router-link></md-table-cell>
+        <md-table-cell><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ b.category }}</router-link></md-table-cell>
         <md-table-cell>{{ b.price_cents }}</md-table-cell>
         <md-table-cell>{{ b.debtor }}</md-table-cell>
         <md-table-cell>{{ b.payment_due_date }}</md-table-cell>

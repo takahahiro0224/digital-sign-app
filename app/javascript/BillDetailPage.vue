@@ -3,7 +3,7 @@
     <md-card>
       <md-card-header>
         <md-card-header-text>
-          <div class="md-title">{{ bill.title }}</div>
+          <div class="md-title">{{ bill.category_i18n }}</div>
           <div class="md-subhead">{{ bill.description }}</div>
         </md-card-header-text>
 

@@ -35,8 +35,10 @@
           <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
           
           <md-field>
-            <label>タイトル</label>
-            <md-input v-model="params.bill.title" type="text"></md-input>
+            <label>カテゴリ</label>
+            <md-select v-model="params.bill.category">
+              <md-option v-for="category in categories" v-bind:key="category.id" v-bind:value="category.id">{{ category.name }}</md-option>
+            </md-select>
           </md-field>
 
           <md-field>
@@ -77,12 +79,19 @@ export default {
     return {
       params: {
         bill: {
-          title: '',
           price_cents: '',
         },
         friends: []
       },
       optionFriends: [],
+      categories: [
+        { id: 0, name: "食事" },
+        { id: 1, name: "買い物" },
+        { id: 2, name: "エンタメ" },
+        { id: 3, name: "借金" },
+        { id: 4, name: "請求" },
+        { id: 5, name: "その他" }
+      ],
       showDialog: false,
       newFriend: {
         name: '',
