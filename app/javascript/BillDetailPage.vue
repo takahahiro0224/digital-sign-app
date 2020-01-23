@@ -42,9 +42,14 @@
   
         <md-button class="md-accent" v-on:click="updatePaid" v-if="bill.paid == false">支払い済みにする</md-button>
         <md-button class="md-primary" v-else>支払い済み</md-button>
-        <md-button>メール送信</md-button>
+        <md-button v-on:click="sendMail">メール送信</md-button>
       </md-card-actions>
     </md-card>
+
+    <md-dialog-alert
+      :md-active.sync="alertAfterMail"
+      md-content="請求メールを送信しました。"
+      md-confirm-text="OK" />
   </div>
 </template>
 
@@ -60,7 +65,8 @@ Vue.use(VueMaterial)
 export default {
   data: function () {
     return {
-      bill: {}
+      bill: {},
+      alertAfterMail: false
     }
   },
   mounted () {
@@ -76,6 +82,14 @@ export default {
         .then(response => {
           this.$router.push({ name: 'BillDetailPage', params: { id: this.bill.id }});
         })
+    },
+    sendMail: function() {
+      axios
+        .post(`/api/users/${user.id}/bills/${this.bill.id}/send_mail`)
+        .then(response => {
+          this.$router.push({ name: 'BillDetailPage', params: { id: this.bill.id }});
+        })
+        this.alertAfterMail = true;
     }
   }
 }

@@ -18,8 +18,13 @@ Rails.application.routes.draw do
   get "dashbord" => "dashbord#index"
   namespace :api do
     resources :users, only: [:index, :show] do
-      resources :bills
+      resources :bills do
+        member do
+          post :send_mail
+        end
+      end
       resources :friends
+
     end
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/auth/registrations'

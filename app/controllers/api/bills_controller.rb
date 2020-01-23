@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -40,7 +40,6 @@ module Api
           @debtor.save!
         end
       end
-      # NotificationMailer.send_notification_to_debtor(@user).deliver
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
@@ -57,6 +56,14 @@ module Api
     def destroy
       @bill.destroy!
       head :no_content
+    end
+
+    def send_mail
+      friend_ids = @bill.debtor.map(&:friend_id)
+      friends = Friend.where(id: friend_ids)
+      friends.each do |friend|
+        NotificationMailer.send_mail_to_debtor(friend, @user, @bill).deliver
+      end
     end
 
     protected
