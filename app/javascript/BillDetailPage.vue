@@ -29,7 +29,7 @@
       <md-card-content>
         <div>
           <md-icon>money</md-icon>
-          <span>{{ bill.price_cents }}円</span>
+          <span>{{ bill.price_format }}</span>
         </div>
         <div>
           <md-icon>schedule</md-icon>
@@ -47,9 +47,17 @@
   
         <md-button class="md-accent" v-on:click="updatePaid" v-if="bill.paid == false">支払い済みにする</md-button>
         <md-button class="md-primary" v-else>支払い済み</md-button>
-        <md-button v-on:click="sendMail">メール送信</md-button>
+        <md-button v-on:click="mailConfirmDialog=true">メール送信</md-button>
       </md-card-actions>
     </md-card>
+
+    <md-dialog-confirm
+      :md-active.sync="mailConfirmDialog"
+      md-title="請求メールの送信"
+      md-content="請求メールを請求先のユーザーに送信してよろしいでしょうか?"
+      md-confirm-text="Agree"
+      md-cancel-text="Disagree"
+      @md-confirm="sendMail" />
 
     <md-dialog-alert
       :md-active.sync="alertAfterMail"
@@ -62,6 +70,7 @@
 import Vue from 'vue'
 import axios from 'axios';
 import VueMaterial from 'vue-material';
+// import {MdDialogAlert, MdDialogConfirm} from 'vue-material/dist/components'
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 
@@ -71,7 +80,8 @@ export default {
   data: function () {
     return {
       bill: {},
-      alertAfterMail: false
+      mailConfirmDialog: false,
+      alertAfterMail: false,
     }
   },
   mounted () {

@@ -26,8 +26,8 @@
                   <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
                 </md-field>
                 <md-dialog-actions>
-                <md-button class="md-primary" @click="showDialog = false">Cancel</md-button>
-                <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
+                  <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
+                  <md-button class="md-primary" @click="showDialog = false">Cancel</md-button>
                 </md-dialog-actions>
               </form>
             </md-dialog>
@@ -35,21 +35,31 @@
           <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
           
           <md-field>
-            <label>カテゴリ</label>
+            <label>Category</label>
             <md-select v-model="params.bill.category">
               <md-option v-for="category in categories" v-bind:key="category.id" v-bind:value="category.id">{{ category.name }}</md-option>
             </md-select>
           </md-field>
 
           <md-field>
-            <label>説明</label>
+            <label>Description</label>
             <md-textarea v-model="params.bill.description"></md-textarea>
           </md-field>
 
+      
           <md-field>
-            <label>金額</label>
+            <label>currency</label>
+              <md-select v-model="params.bill.currency">
+              <md-option v-for="c in currency" v-bind:key="c" v-bind:value="c">{{ c }}</md-option>
+            </md-select>
+          </md-field>
+
+          <md-field>
+            <label>price</label>
             <md-input v-model="params.bill.price_cents" type="number"></md-input>
           </md-field>
+          
+
           <md-datepicker v-model="params.bill.payment_due_date">
             <label>支払い期限日</label>
           </md-datepicker>
@@ -80,6 +90,7 @@ export default {
       params: {
         bill: {
           price_cents: '',
+          currency: 'JPY'
         },
         friends: []
       },
@@ -91,6 +102,17 @@ export default {
         { id: 3, name: "借金" },
         { id: 4, name: "請求" },
         { id: 5, name: "その他" }
+      ],
+      currency: [
+        'JPY',
+        'USD',
+        'EUR',
+        'GBP',
+        'CAD',
+        'AUD',
+        'NZD',
+        'CNY',
+        'KRW'
       ],
       showDialog: false,
       newFriend: {

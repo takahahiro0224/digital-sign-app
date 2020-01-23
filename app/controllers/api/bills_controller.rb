@@ -31,6 +31,7 @@ module Api
       
       res.store("debtor", friends_name)
       res.store("category_i18n", @bill.category_i18n)
+      res.store("price_format", @bill.price.format)
       render json: res
     end
 
@@ -64,7 +65,7 @@ module Api
     end
 
     def send_mail
-      friends = get_friends(bill)
+      friends = get_friends(@bill)
       friends.each do |friend|
         NotificationMailer.send_mail_to_debtor(friend, @user, @bill).deliver
       end
