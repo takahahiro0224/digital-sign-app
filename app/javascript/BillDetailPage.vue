@@ -37,6 +37,11 @@
         </div>
       </md-card-content>
 
+      <md-card-content>
+        <div>
+          <md-chip class="md-primary" v-for="d in bill.debtor" :key="d">{{ d }}</md-chip>
+        </div>
+      </md-card-content>
     
       <md-card-actions md-alignment="left">
   

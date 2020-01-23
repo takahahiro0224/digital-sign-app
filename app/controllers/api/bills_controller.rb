@@ -26,6 +26,10 @@ module Api
     # billとdebtorを組み合わせて返す
     def show
       res = @bill.attributes
+      friends = get_friends(@bill)
+      friends_name = friends.map(&:name)
+      
+      res.store("debtor", friends_name)
       res.store("category_i18n", @bill.category_i18n)
       render json: res
     end
@@ -40,6 +44,7 @@ module Api
           @debtor.save!
         end
       end
+      
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
@@ -59,14 +64,18 @@ module Api
     end
 
     def send_mail
-      friend_ids = @bill.debtor.map(&:friend_id)
-      friends = Friend.where(id: friend_ids)
+      friends = get_friends(bill)
       friends.each do |friend|
         NotificationMailer.send_mail_to_debtor(friend, @user, @bill).deliver
       end
     end
 
     protected
+
+      def get_friends(bill)
+        friend_ids = @bill.debtor.map(&:friend_id)
+        Friend.where(id: friend_ids)
+      end
 
       def set_user
         @user = User.where(id: params[:user_id]).first
