@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -9,7 +9,7 @@ module Api
     end
 
     def index
-      bills = @user.bills.select(:id, :title, :price_cents, :payment_due_date)
+      bills = @user.bills.select(:id, :price_cents, :payment_due_date, :category)
       res = bills.all.map {|bill| bill.attributes}
       res.each do |h|
         friend_id = Bill.find(h["id"]).debtor&.first&.friend_id
@@ -25,7 +25,14 @@ module Api
 
     # billとdebtorを組み合わせて返す
     def show
-      render json: @bill
+      res = @bill.attributes
+      friends = get_friends(@bill)
+      friends_name = friends.map(&:name)
+      
+      res.store("debtor", friends_name)
+      res.store("category_i18n", @bill.category_i18n)
+      res.store("price_format", @bill.price.format)
+      render json: res
     end
 
     # Post params: {'bill': {...}, 'friends': [...]}
@@ -38,7 +45,7 @@ module Api
           @debtor.save!
         end
       end
-      # NotificationMailer.send_notification_to_debtor(@user).deliver
+      
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
@@ -57,7 +64,19 @@ module Api
       head :no_content
     end
 
+    def send_mail
+      friends = get_friends(@bill)
+      friends.each do |friend|
+        NotificationMailer.send_mail_to_debtor(friend, @user, @bill).deliver
+      end
+    end
+
     protected
+
+      def get_friends(bill)
+        friend_ids = @bill.debtor.map(&:friend_id)
+        Friend.where(id: friend_ids)
+      end
 
       def set_user
         @user = User.where(id: params[:user_id]).first
@@ -72,7 +91,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :title, :description, :price_cents, :currency, :payment_due_date, :paid)
+        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid)
       end
   end
 end

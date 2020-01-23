@@ -1,0 +1,18 @@
+ja:
+  activerecord:
+    models:
+      bill: 請求
+    attirbutes:
+      bill:
+        category: カテゴリー
+  enums:
+    bill:
+      category:
+        foods: 食事
+        shopping: 買い物
+        entertainment: エンタメ
+        debt: 借金
+        charge: 請求
+        others: その他
+
+
