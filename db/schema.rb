@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 2020_01_24_092405) do
     t.integer "price_cents", default: 0, null: false
     t.string "currency", default: "JPY", null: false
     t.boolean "paid", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.date "payment_due_date"
     t.integer "category", default: 0, null: false
     t.index ["user_id"], name: "index_bills_on_user_id"
@@ -26,6 +28,8 @@ ActiveRecord::Schema.define(version: 2020_01_24_092405) do
   create_table "charge_actions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "charge_id"
     t.integer "action_type", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["charge_id"], name: "index_charge_actions_on_charge_id"
   end
 

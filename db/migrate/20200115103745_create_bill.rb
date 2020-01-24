@@ -7,6 +7,7 @@ class CreateBill < ActiveRecord::Migration[6.0]
       t.integer :price_cents, null: false, default: 0
       t.string :currency, null: false, default: "JPY"
       t.boolean :paid, null: false, default: false
+      t.timestamps null: false
     end
   end
 end
