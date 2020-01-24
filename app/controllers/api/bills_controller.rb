@@ -25,10 +25,6 @@ module Api
       res = @bill.attributes
       friends = @bill.charges.map(&:friend)
       friends_name = friends.map(&:name)
-      @bill.charges.each do |charge|
-        charge.friend
-        actions = charge.charge_actions
-      end
       
       res.store("friends", friends_name)
       res.store("category_i18n", @bill.category_i18n)

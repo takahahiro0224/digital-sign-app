@@ -5,6 +5,8 @@ class CreateFriend < ActiveRecord::Migration[6.0]
       t.string :name, null: false
       t.string :email, null: false
       t.text :description
+
+      t.timestamps null: false
     end
   end
 end

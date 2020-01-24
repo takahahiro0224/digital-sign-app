@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(version: 2020_01_24_092405) do
 
   create_table "charges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "bill_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.bigint "friend_id"
     t.boolean "paid", default: false, null: false
     t.index ["bill_id"], name: "index_charges_on_bill_id"
@@ -46,6 +48,8 @@ ActiveRecord::Schema.define(version: 2020_01_24_092405) do
     t.string "name", null: false
     t.string "email", null: false
     t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_friends_on_user_id"
   end
 
