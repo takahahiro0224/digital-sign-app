@@ -39,7 +39,7 @@
 
       <md-card-content>
         <div>
-          <md-chip class="md-primary" v-for="d in bill.debtor" :key="d">{{ d }}</md-chip>
+          <md-chip class="md-primary" v-for="friend in bill.friends" :key="friend">{{ friend }}</md-chip>
         </div>
       </md-card-content>
     

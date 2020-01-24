@@ -12,24 +12,21 @@ module Api
       bills = @user.bills.select(:id, :price_cents, :payment_due_date, :category)
       res = bills.all.map {|bill| bill.attributes}
       res.each do |h|
-        friend_id = Bill.find(h["id"]).debtor&.first&.friend_id
-        friend_name = ""
-        if friend_id
-          friend_name = Friend.find(friend_id).name
-        end
-        h.store("debtor", friend_name)
+        friends = Bill.find(h["id"]).charges.map(&:friend)
+        friend_names = friends.map(&:name)
+        h.store("friends", friend_names)
       end
       render json: res.to_json
     end
 
 
-    # billとdebtorを組み合わせて返す
+    # billとfriendを組み合わせて返す
     def show
       res = @bill.attributes
       friends = get_friends(@bill)
       friends_name = friends.map(&:name)
       
-      res.store("debtor", friends_name)
+      res.store("friends", friends_name)
       res.store("category_i18n", @bill.category_i18n)
       res.store("price_format", @bill.price.format)
       render json: res
@@ -41,8 +38,8 @@ module Api
         @bill = @user.bills.new(bill_params)
         @bill.save!
         friend_params.each do |id|
-          @debtor = Debtor.new(bill_id: @bill.id, friend_id: id)
-          @debtor.save!
+          @charge = Charge.new(bill_id: @bill.id, friend_id: id)
+          @charge.save!
         end
       end
       
@@ -65,17 +62,16 @@ module Api
     end
 
     def send_mail
-      friends = get_friends(@bill)
-      friends.each do |friend|
-        NotificationMailer.send_mail_to_debtor(friend, @user, @bill).deliver
+      @bill.charges.each do |charge|
+        NotificationMailer.send_mail_to_friend(charge.friend, @bill).deliver
+        charge.charge_actions.new(action_type: 'notice').save
       end
     end
 
     protected
 
       def get_friends(bill)
-        friend_ids = @bill.debtor.map(&:friend_id)
-        Friend.where(id: friend_ids)
+        @bill.charges.map(&:friend)
       end
 
       def set_user

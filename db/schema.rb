@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_24_081637) do
+ActiveRecord::Schema.define(version: 2020_01_24_092405) do
 
   create_table "bills", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2020_01_24_081637) do
 
   create_table "charge_actions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "charge_id"
-    t.integer "type", default: 0, null: false
+    t.integer "action_type", default: 0, null: false
     t.index ["charge_id"], name: "index_charge_actions_on_charge_id"
   end
 

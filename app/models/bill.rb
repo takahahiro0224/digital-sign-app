@@ -1,6 +1,6 @@
 class Bill < ApplicationRecord
   belongs_to :user
-  has_many :debtor, dependent: :destroy
+  has_many :charges, dependent: :destroy
 
   validates :category, presence: true
   monetize :price_cents, with_model_currency: :currency

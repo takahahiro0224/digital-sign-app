@@ -1,9 +1,9 @@
 class NotificationMailer < ApplicationMailer
   default from: "hogehoge@example.com"
 
-  def send_mail_to_debtor(friend, user, bill)
+  def send_mail_to_friend(friend, bill)
     @friend = friend
-    @user = user
+    @user = bill.user
     @bill = bill
     mail(
       subject: "#{@user.username}様より請求のお知らせ", #メールのタイトル
@@ -11,5 +11,13 @@ class NotificationMailer < ApplicationMailer
     ) do |format|
       format.text
     end
-  end 
+
+
+  end
+  
+  def send_remind_to_friend
+  end
+
+  def send_alert_to_friend
+  end
 end
