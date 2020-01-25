@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy, :send_mail]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -30,6 +30,24 @@ module Api
       res.store("category_i18n", @bill.category_i18n)
       res.store("price_format", @bill.price.format)
       render json: res
+    end
+
+    # メール送信履歴を降順に返す
+    def sent_mails
+      res = []
+      @bill.charges.each do |charge|
+        friend_name = charge.friend.name
+        actions = charge.charge_actions
+        next if actions.empty?
+
+        actions.map(&:attributes).each do |ca|
+          ca["friend_name"] = friend_name
+          res << ca
+        end
+      end
+      response = res.empty? ? res : res.sort_by{|r| r["created_at"] }.reverse
+
+      render json: response
     end
 
     # Post params: {'bill': {...}, 'friends': [...]}
@@ -66,6 +84,7 @@ module Api
         NotificationMailer.send_mail_to_friend(charge.friend, @bill).deliver
         charge.charge_actions.new(action_type: 'notice').save
       end
+      render json: { status: "ok" }
     end
 
     protected
@@ -87,7 +106,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid)
+        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :created_at, :updated_at)
       end
   end
 end
