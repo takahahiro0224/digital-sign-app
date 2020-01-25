@@ -39,7 +39,7 @@
 
       <md-card-content>
         <div>
-          <md-chip class="md-primary" v-for="d in bill.debtor" :key="d">{{ d }}</md-chip>
+          <md-chip class="md-primary" v-for="friend in bill.friends" :key="friend">{{ friend }}</md-chip>
         </div>
       </md-card-content>
     
@@ -59,10 +59,26 @@
       md-cancel-text="Disagree"
       @md-confirm="sendMail" />
 
-    <md-dialog-alert
-      :md-active.sync="alertAfterMail"
-      md-content="請求メールを送信しました。"
-      md-confirm-text="OK" />
+
+      <md-table>
+      <md-table-toolbar>
+        <h1 class="md-title">メール送信履歴</h1>
+      </md-table-toolbar>
+
+      <md-table v-if="sentMails.length > 0">
+        <md-table-row  v-for="mail in sentMails" :key="mail.id">
+          <md-table-cell>{{ mail.created_at.slice(0,16) }}</md-table-cell>
+          <md-table-cell>{{ mail.friend_name }}さんに {{ actionType[mail.action_type] }}を送信しました。 </md-table-cell>
+        </md-table-row>
+      </md-table>
+      <md-table v-else>
+        <md-table-row>
+          <md-table-cell></md-table-cell>
+          <md-table-cell>メール送信履歴はまだありません。</md-table-cell>
+        </md-table-row>
+      </md-table>
+
+    </md-table>
   </div>
 </template>
 
@@ -80,14 +96,23 @@ export default {
   data: function () {
     return {
       bill: {},
+      sentMails: [],
       mailConfirmDialog: false,
-      alertAfterMail: false,
+      actionType: {
+        'notice': "請求メール",
+        'remind': "請求リマインド（自動）",
+        'alert': '請求アラート（自動）'
+      }
     }
   },
   mounted () {
     axios
       .get(`/api/users/${user.id}/bills/${this.$route.params.id}.json`)
       .then(response => (this.bill = response.data))
+
+    axios
+        .get(`/api/users/${user.id}/bills/${this.$route.params.id}/sent_mails`)
+        .then(response => (this.sentMails = response.data))
   },
   methods: {
     updatePaid: function() {
@@ -95,16 +120,15 @@ export default {
       axios
         .patch(`/api/users/${user.id}/bills/${this.bill.id}`, this.bill)
         .then(response => {
-          this.$router.push({ name: 'BillDetailPage', params: { id: this.bill.id }});
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         })
     },
     sendMail: function() {
       axios
         .post(`/api/users/${user.id}/bills/${this.bill.id}/send_mail`)
         .then(response => {
-          this.$router.push({ name: 'BillDetailPage', params: { id: this.bill.id }});
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
         })
-        this.alertAfterMail = true;
     }
   }
 }

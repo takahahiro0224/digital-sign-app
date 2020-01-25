@@ -13,7 +13,7 @@
       <md-table-row v-for="b in bills" :key="b.id">
         <md-table-cell><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ categories[b.category] }}</router-link></md-table-cell>
         <md-table-cell>{{ b.price_cents }}</md-table-cell>
-        <md-table-cell>{{ b.debtor }}</md-table-cell>
+        <md-table-cell>{{ b.friends.join(', ')}}</md-table-cell>
         <md-table-cell>{{ b.payment_due_date }}</md-table-cell>
         <md-table-cell>
           <button @click="deleteTarget = b.id; showModal = true">削除</button>

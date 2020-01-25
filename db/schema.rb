@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_23_121346) do
+ActiveRecord::Schema.define(version: 2020_01_24_092405) do
 
   create_table "bills", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
@@ -18,15 +18,29 @@ ActiveRecord::Schema.define(version: 2020_01_23_121346) do
     t.integer "price_cents", default: 0, null: false
     t.string "currency", default: "JPY", null: false
     t.boolean "paid", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.date "payment_due_date"
     t.integer "category", default: 0, null: false
     t.index ["user_id"], name: "index_bills_on_user_id"
   end
 
-  create_table "debtors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "charge_actions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+    t.bigint "charge_id"
+    t.integer "action_type", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["charge_id"], name: "index_charge_actions_on_charge_id"
+  end
+
+  create_table "charges", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "bill_id"
-    t.integer "friend_id"
-    t.index ["bill_id"], name: "index_debtors_on_bill_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "friend_id"
+    t.boolean "paid", default: false, null: false
+    t.index ["bill_id"], name: "index_charges_on_bill_id"
+    t.index ["friend_id"], name: "index_charges_on_friend_id"
   end
 
   create_table "friends", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
@@ -34,6 +48,8 @@ ActiveRecord::Schema.define(version: 2020_01_23_121346) do
     t.string "name", null: false
     t.string "email", null: false
     t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_friends_on_user_id"
   end
 
@@ -60,4 +76,5 @@ ActiveRecord::Schema.define(version: 2020_01_23_121346) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "charges", "friends"
 end
