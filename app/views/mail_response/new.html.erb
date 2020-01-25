@@ -1,0 +1,47 @@
+
+<div class="card center-align">
+<h4><%= @bill.user.username %>さんへのお支払い内容</h4>
+<div class="divider"></div>
+  <div class="section">
+    <p>ご請求額：<b><%= @bill.price.format %></b></p>
+  </div>
+  <div class="divider"></div>
+  <div class="section">
+    <p>名目：<b><%= @bill.category %></b></p>
+  </div>
+  <div class="divider"></div>
+  <div class="section">
+    <p>詳細： <b><%= @bill.description %></b></p>
+  </div>
+  <div class="divider"></div>
+  <div class="section">
+    <p>お支払い期限： <b><%= @bill.payment_due_date %></b></p>
+  </div>
+  <div class="divider"></div>
+
+<div class="row">
+  <form>
+    <div class="row">
+      <label>
+        <input name="group1" type="radio" checked />
+        <span>Red</span>
+      </label>
+      <label>
+        <input name="group1" type="radio" />
+        <span>Yellow</span>
+      </label>
+      <label>
+        <input class="with-gap" name="group1" type="radio"  />
+        <span>Green</span>
+      </label>
+    </div>
+    <div class="row">
+      <div class="input-field col">
+        <i class="material-icons prefix">mode_edit</i>
+        <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+        <label for="icon_prefix2"><%= @username %>さんにメッセージをどうぞ！</label>
+      </div>
+    </div>
+  </form>
+</div>
+</div>
