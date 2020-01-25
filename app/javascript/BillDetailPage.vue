@@ -60,7 +60,7 @@
       @md-confirm="sendMail" />
 
 
-      <md-table md-card>
+      <md-table>
       <md-table-toolbar>
         <h1 class="md-title">メール送信履歴</h1>
       </md-table-toolbar>
