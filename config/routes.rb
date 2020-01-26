@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   # link in mail
   get "action/:token", to: 'mail_response#new'
   post "action/:token", to: 'mail_response#create'
+  get "done", to: 'mail_response#done'
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: '/letter_opener'

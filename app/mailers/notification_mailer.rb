@@ -1,10 +1,11 @@
 class NotificationMailer < ApplicationMailer
   default from: "hogehoge@example.com"
 
-  def send_mail_to_friend(friend, bill)
+  def send_mail_to_friend(friend, bill, action)
     @friend = friend
     @user = bill.user
     @bill = bill
+    @charge_action = action
     mail(
       subject: "#{@user.username}様より請求のお知らせ", #メールのタイトル
       to: @friend.email #宛先

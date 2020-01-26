@@ -79,10 +79,12 @@ module Api
       head :no_content
     end
 
+    # TODO: charge_actionの取り出し方を変える
     def send_mail
       @bill.charges.each do |charge|
-        NotificationMailer.send_mail_to_friend(charge.friend, @bill).deliver
         charge.charge_actions.new(action_type: 'notice').save
+        charge_action = charge.charge_actions.last
+        NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
       end
       render json: { status: "ok" }
     end
