@@ -9,14 +9,18 @@ module Api
     end
 
     def index
-      bills = @user.bills.select(:id, :price_cents, :payment_due_date, :category)
+      response = []
+      bills = @user.bills
       res = bills.all.map {|bill| bill.attributes}
-      res.each do |h|
-        friends = Bill.find(h["id"]).charges.map(&:friend)
+      bills.each do |bill|
+        res = bill.attributes
+        friends = bill.charges.map(&:friend)
         friend_names = friends.map(&:name)
-        h.store("friends", friend_names)
+        res.store("friends", friend_names)
+        res.store("price_format", bill.price.format)
+        response << res
       end
-      render json: res.to_json
+      render json: response.to_json
     end
 
 
