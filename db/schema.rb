@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_25_174146) do
+ActiveRecord::Schema.define(version: 2020_01_27_181457) do
 
   create_table "bills", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
@@ -31,6 +31,8 @@ ActiveRecord::Schema.define(version: 2020_01_25_174146) do
     t.text "comment"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "comment_score"
+    t.float "comment_magnitude"
     t.index ["charge_action_id"], name: "index_charge_action_responses_on_charge_action_id"
   end
 

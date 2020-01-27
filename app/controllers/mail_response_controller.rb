@@ -11,9 +11,20 @@ class MailResponseController < ApplicationController
     @username = @bill.user.username
   end
 
+  # commentを自然言語処理にかけてDBに結果を保存
   def create
-    response = ChargeActionResponse.new(param_to_int(response_params))
+    puts response_params
+    response = ChargeActionResponse.new(response_params)
     response.charge_action = @charge_action
+
+    nl = MachineLearning::NaturalLanguage.new
+    nl_res = nl.analyze_sentiment(response.comment)
+    
+    if nl_res
+      response.comment_score = nl_res[:score]
+      response.comment_magnitude = nl_res[:magnitude]
+    end
+
     if response.save
       redirect_to '/done'
     else
