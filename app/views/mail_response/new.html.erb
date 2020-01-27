@@ -21,7 +21,8 @@
       <div class="row">
         <div class="input-field col s6">
           <i class="material-icons prefix">calendar_today</i>
-          <%= f.select :payment_ability, [["大丈夫！", 0], ["支払いが遅れそう", 1], ["わからない", 2]],  placeholder: 0, id: "icon_prefix1"%>
+
+          <%= f.select :payment_ability, ChargeActionResponse.payment_abilities.map{|k,v| [I18n.t("charge_action_responses.payment_ability.#{k}"),k]}, id: "icon_prefix1" %>
           <label for="icon_prefix1">期日までに支払えますか？</label>
         </div>
       </div>
