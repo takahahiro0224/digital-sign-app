@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title"><%= @bill.user.username %>さんへのお支払い内容</span>
+
+      <div class="section">
+      <p>ご請求額：<b><%= @bill.price.format %></b></p>  
+      <p>名目：<b><%= @bill.category %></b></p>
+      <p>詳細： <b><%= @bill.description %></b></p>
+      <p>お支払い期限： <b><%= @bill.payment_due_date %></b></p>
+    </div>
+  </div>
+ </div>
+
+<div class= "card">
+  <div class="card-content">
+    <span>内容を確認後、フォームを入力して送信ボタンを押してください</span>
+    
+    <div class="section">
+      <%= form_with url: "/action/#{@charge_action.token}" do |f| %>
+      <div class="row">
+        <div class="input-field col s6">
+          <i class="material-icons prefix">calendar_today</i>
+          <%= f.select :payment_ability, [["大丈夫！", 0], ["支払いが遅れそう", 1], ["わからない", 2]],  placeholder: 0, id: "icon_prefix1"%>
+          <label for="icon_prefix1">期日までに支払えますか？</label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="input-field col s10">
+          <i class="material-icons prefix">mode_edit</i>
+          <%= f.text_field :comment, class: "materialize-textarea", id: "icon_prefix2" %>
+          <label for="icon_prefix2"><%= @username %>さんにメッセージをどうぞ！</label>
+        </div>
+      </div>
+        
+      <button class="btn waves-effect waves-light" type="submit" name="action">送信する
+        <i class="material-icons right">send</i>
+        <%= f.submit ""%>
+      </button>
+        
+      <% end %>
+    </div>
+  </div>
+</div>

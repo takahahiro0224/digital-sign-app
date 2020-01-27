@@ -4,25 +4,51 @@
       <md-table-toolbar>
         <h1 class="md-title">請求一覧</h1>
       </md-table-toolbar>
+
       <md-table-row>
         <md-table-head>カテゴリ</md-table-head>
         <md-table-head>金額</md-table-head>
         <md-table-head>貸した人・請求する人</md-table-head>
         <md-table-head>支払い期限日</md-table-head>
       </md-table-row>
+
       <md-table-row v-for="b in bills" :key="b.id">
-        <md-table-cell><router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">{{ categories[b.category] }}</router-link></md-table-cell>
-        <md-table-cell>{{ b.price_cents }}</md-table-cell>
+        <md-table-cell>{{ categories[b.category] }}</md-table-cell>
+        <md-table-cell>{{ b.price_format }}</md-table-cell>
         <md-table-cell>{{ b.friends.join(', ')}}</md-table-cell>
         <md-table-cell>{{ b.payment_due_date }}</md-table-cell>
+
         <md-table-cell>
-          <button @click="deleteTarget = b.id; showModal = true">削除</button>
+          <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
+            <router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">
+            <md-icon>launch</md-icon>
+            </router-link>
+          </md-button>
+        </md-table-cell>
+
+        <md-table-cell>
+          <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
+            <md-icon>delete</md-icon>
+          </md-button>
         </md-table-cell>
       </md-table-row>
-    </md-table>    
-    <modal v-if="showModal" @cancel="showModal = false" @ok="deleteBill(); showModal = false;">
-      <div slot="body">削除しますか?</div>
-    </modal>
+    </md-table>
+
+    <md-dialog-confirm
+      :md-active.sync="showModal"
+      md-title="この請求メモを削除しますか？"
+      md-confirm-text="OK"
+      md-cancel-text="Cancel"
+      @md-cancel="showModal = false"
+      @md-confirm="deleteBill(); showModal = false;" />    
+    
+
+    <md-speed-dial class="md-bottom-right">
+      <md-speed-dial-target to="/bills/new">
+        <md-icon>add</md-icon>
+      </md-speed-dial-target>
+    </md-speed-dial>
+
   </div>
 </template>
 

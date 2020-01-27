@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   # mount_devise_token_auth_for 'User', at: 'auth'
   root 'home#about'
 
-
   devise_for :users, :controllers => {
     :registrations => 'user/registrations',
     :sessions => 'user/sessions'
@@ -30,8 +29,12 @@ Rails.application.routes.draw do
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/auth/registrations'
     }
-
   end
+
+  # link in mail
+  get "action/:token", to: 'mail_response#new'
+  post "action/:token", to: 'mail_response#create'
+  get "done", to: 'mail_response#done'
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: '/letter_opener'
