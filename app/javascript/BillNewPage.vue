@@ -46,7 +46,33 @@
             <md-textarea v-model="params.bill.description"></md-textarea>
           </md-field>
 
-      
+          <md-field>
+          <md-button class="md-icon-button md-raised md-primary" @click="textDetectView=true">
+            <md-icon>add_a_photo</md-icon>
+          </md-button>
+            <span>画像からテキストを取り込む</span>
+          </md-field>
+
+          <md-dialog :md-active.sync="textDetectView">
+            <md-dialog-title>画像からテキストを読み込む</md-dialog-title>
+              <form novalidate class="md-layout" @submit="textDetect">
+                <md-field>
+                  <label>画像からテキストを取り込む</label>
+                  <md-file  v-model="image" accept="image/*" />
+                </md-field>
+                <md-dialog-actions>
+                  <md-button class="md-primary" type="submit" @click="textDetectView = false">Send</md-button>
+                  <md-button class="md-primary" @click="textDetectView = false">Cancel</md-button>
+                </md-dialog-actions>
+              </form>
+            </md-dialog>
+          
+         
+          <md-field>
+            <label>画像からテキストを取り込む</label>
+            <md-file  accept="image/*" />
+          </md-field>
+
           <md-field>
             <label>currency</label>
               <md-select v-model="params.bill.currency">
@@ -115,6 +141,8 @@ export default {
         'KRW'
       ],
       showDialog: false,
+      textDetectView: false,
+      image: "",
       newFriend: {
         name: '',
         email: ''
@@ -149,6 +177,10 @@ export default {
       axios
         .post(`/api/users/${user.id}/friends`, this.newFriend)
       this.updateFriends();
+    },
+    textDetect: function() {
+      axios
+        .post(`/api/analyze/text_detect`, this.image)
     }
   }
 }

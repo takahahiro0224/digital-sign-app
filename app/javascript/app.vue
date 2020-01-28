@@ -4,7 +4,7 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">Money Collect</span>
+      <span class="md-title">Money Collect ver.β</span>
 
       <div class="md-toolbar-section-end">
         <md-button @click="showSidepanel = true">Favorites</md-button>
@@ -13,7 +13,7 @@
 
     <md-drawer :md-active.sync="showNavigation" md-swipeable>
       <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">Money Collect</span>
+        <span class="md-title">Money Collect ver.β</span>
       </md-toolbar>
 
       <md-list>
