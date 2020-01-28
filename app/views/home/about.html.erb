@@ -1,2 +1,82 @@
-<%= link_to "ログイン", "/login" %>
-<%= link_to "新規登録", "/signup" %>
+<nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="#">お問い合わせ</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+
+<div id="index-banner" class="parallax-container">
+  <div class="section no-pad-bot">
+    <div class="container">
+      <br><br>
+      <h1 class="header center orange-text" style="font-family:"Noto Sans JP"" >マネーコレクト</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">お金の貸し借り管理アプリ！</h5>
+      </div>
+      <div class="row center">
+      <a href="/login" id="download-button" class="btn-large waves-effect waves-light orange">ログイン</a>
+      <a href="/signup" id="download-button" class="btn-large waves-effect waves-light orange">新規登録</a>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+  <div class="parallax"><%= image_tag "money.png" %></div>
+</div>
+
+
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">visibility</i></h2>
+            <h5 class="center">貸しているお金を可視化</h5>
+            <p class="light">管理画面で請求書を作成し、曖昧になりがちな誰かに貸しているお金を可視化します。シンプルなUIとわかりやすい操作ですぐに請求書を作成することができます。一つの請求書に複数人登録することができるので、飲み会の立替金の管理にも使えます。</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">laptop</i></h2>
+            <h5 class="center"> 気まずい催促をシステム化</h5>
+            <p class="light">気まずくなりがちな返済の催促をシステム化し、お金の貸し借りにおけるコミュニケーションコストを削減します。あなたの好きなタイミング、または設定された返済期限日に応じてシステムが自動でリマインド・アラートメールを送信することで返済漏れを防ぎます。</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">insert_chart_outlined</i></h2>
+            <h5 class="center">見えてくる個人の信用</h5>
+            <p class="light">友人のメッセージや借金の返済率・遅延率を利用し機械学習を使った独自のアルゴリズムによって、あなたの友人の信用度をスコアリングします。信用スコアによってお金を貸していい友達、貸してはダメな友達が見えてきます。</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <br><br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Company Bio</h5>
+          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it<>s our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+
+
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+      </div>
+    </div>
+  </footer>
