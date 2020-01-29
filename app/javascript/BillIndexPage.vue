@@ -4,14 +4,20 @@
        <md-card-header>
          <div class="md-title">{{ categories[b.category ]}}</div>
          <div v-if="b.paid">
-          <div class= "md-subhead">支払い済み</div>
-         </div>
+              <b>支払い済み</b>
+          </div>
+          <div v-else>
+            <b class=late>支払い未完了</b>
+          </div>
        </md-card-header>
-       <md-card-content>
-         <div>
-           <md-chip class="md-primary" v-for="friend in b.friends" :key="friend">{{ friend }}</md-chip>
-         </div>
-       </md-card-content>
+       <md-card-content> 
+        <md-chip class="md-accent" v-for="friend in b.friends.filter(friend=> friend.paid==false)" :key="friend.charge_id">
+          {{ friend.name }}
+        </md-chip>
+        <md-chip class="md-primary" v-for="friend in b.friends.filter(friend=> friend.paid==true)" :key="friend.charge_id">
+          {{ friend.name }}
+         </md-chip>
+      </md-card-content>
        <md-card-content>
          <div>
            <md-icon>money</md-icon>
@@ -61,7 +67,8 @@ export default {
   },
   data: function () {
     return {
-      bills: [],
+      bills: [
+      ],
       showModal: false,
       deleteTarget: -1,
       errors: '',

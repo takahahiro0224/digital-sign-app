@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails, :update_paid]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -15,9 +15,12 @@ module Api
         res = bill.attributes
 
         payment_late = payment_late?(bill.payment_due_date)
-        friends = bill.charges.map(&:friend)
-        friend_names = friends.map(&:name)
-        res.store("friends", friend_names)
+
+        friends_res = []
+        bill.charges.each do |charge|
+          friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
+        end
+        res.store("friends", friends_res)
         res.store("price_format", bill.price.format)
         res.store("payment_late", payment_late)
         response << res
@@ -29,10 +32,9 @@ module Api
     # billとfriendを組み合わせて返す
     def show
       res = @bill.attributes
-      friends = @bill.charges.map(&:friend)
       friends_res = []
-      friends.each do |friend|
-        friends_res << {'id': friend.id, 'name': friend.name}
+      @bill.charges.each do |charge|
+        friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
       end
       payment_late = payment_late?(@bill.payment_due_date)
       
@@ -85,6 +87,19 @@ module Api
       end
     end
 
+    def update_paid
+      @charge = Charge.find(update_paid_params)
+      @charge.paid = true
+      @charge.save
+
+      if @bill.charges.map(&:paid).all? 
+        @bill.paid = true
+        @bill.save
+      end
+
+      head :no_content
+    end
+
     def destroy
       @bill.destroy!
       head :no_content
@@ -92,9 +107,8 @@ module Api
 
     # TODO: charge_actionの取り出し方を変える
     def send_mail
-      puts send_mail_params
       @bill.charges.each do |charge|
-        if send_mail_params.include?(charge.friend_id)
+        if send_mail_params.include?(charge.id)
           charge.charge_actions.new(action_type: 'notice').save
           charge_action = charge.charge_actions.last
           NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
@@ -126,7 +140,11 @@ module Api
       end
 
       def send_mail_params
-        params.require(:friends)
+        params.require(:charges)
+      end
+
+      def update_paid_params
+        params.require(:charge)
       end
 
       def bill_params
