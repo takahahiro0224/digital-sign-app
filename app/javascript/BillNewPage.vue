@@ -26,8 +26,8 @@
                   <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
                 </md-field>
                 <md-dialog-actions>
-                <md-button class="md-primary" @click="showDialog = false">Cansel</md-button>
-                <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
+                  <md-button class="md-primary" type="submit" @click="showDialog = false">Save</md-button>
+                  <md-button class="md-primary" @click="showDialog = false">Cancel</md-button>
                 </md-dialog-actions>
               </form>
             </md-dialog>
@@ -35,19 +35,80 @@
           <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
           
           <md-field>
-            <label>タイトル</label>
-            <md-input v-model="params.bill.title" type="text"></md-input>
+            <label>Category</label>
+            <md-select v-model="params.bill.category">
+              <md-option v-for="category in categories" v-bind:key="category.id" v-bind:value="category.id">{{ category.name }}</md-option>
+            </md-select>
           </md-field>
 
           <md-field>
-            <label>説明</label>
+            <label>Description</label>
             <md-textarea v-model="params.bill.description"></md-textarea>
           </md-field>
 
+          <md-button class="md-primary" @click="textDetectView=true">
+            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む
+          </md-button>
+      
+
+          <md-dialog :md-active.sync="textDetectView" :md-click-outside-to-close=false>
+            <md-dialog-title>画像からテキストを読み込む</md-dialog-title>
+              <form novalidate class="md-layout" @submit="textDetect">
+                <md-field>
+                  <label>画像を選択</label>
+                  <md-file accept="image/*" @change="attachImg" />
+                </md-field>
+
+                <md-dialog-actions>
+                  <md-button v-show="uploadedImage" class="md-primary" type="submit" @click="textDetectView=false; spinner=true;">To TEXT</md-button>
+                  <md-button class="md-primary" @click="textDetectView = false; removeImage;">Cancel</md-button>
+                </md-dialog-actions>
+
+                 <md-card v-show="uploadedImage">
+                  <md-card-header>
+                  </md-card-header>
+                  
+                  <md-card-content>
+                  <md-card-media>
+                    <img
+                      :src="uploadedImage"
+                      alt=""
+                     />
+                  </md-card-media>
+                  </md-card-content>
+                </md-card>
+               
+              </form>
+            </md-dialog>
+
+            <md-progress-spinner v-show="spinner" :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
+
+            <md-dialog :md-active.sync="textDetectResultView" :md-click-outside-to-close=false>
+              <md-dialog-title>テキスト結果</md-dialog-title>
+    
+                <md-content class="md-scrollbar" style="white-space:pre-wrap; word-wrap:break-word;">
+                  {{ textDetectResult.text }}
+                </md-content>
+
+                <md-dialog-actions>
+                <md-button @click="textCopy">COPY!</md-button>
+                <md-button @click="textDetectResultView=false; uploadedImage=false;">Close</md-button>
+              </md-dialog-actions>
+            </md-dialog>
+
           <md-field>
-            <label>金額</label>
+            <label>currency</label>
+              <md-select v-model="params.bill.currency">
+              <md-option v-for="c in currency" v-bind:key="c" v-bind:value="c">{{ c }}</md-option>
+            </md-select>
+          </md-field>
+
+          <md-field>
+            <label>price</label>
             <md-input v-model="params.bill.price_cents" type="number"></md-input>
           </md-field>
+          
+
           <md-datepicker v-model="params.bill.payment_due_date">
             <label>支払い期限日</label>
           </md-datepicker>
@@ -57,6 +118,7 @@
         <md-card-actions>
           <md-button type="submit" class="md-primary md-raised">請求メモを作成</md-button>
         </md-card-actions>
+
       </md-card>
 
     </form>
@@ -70,6 +132,8 @@ import axios from 'axios';
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import VueMaterial from 'vue-material'
+import clipboard from 'clipboard-copy';
+import loadImage from 'blueimp-load-image';
 
 Vue.use(VueMaterial)
 export default {
@@ -77,13 +141,40 @@ export default {
     return {
       params: {
         bill: {
-          title: '',
           price_cents: '',
+          currency: 'JPY'
         },
         friends: []
       },
       optionFriends: [],
+      categories: [
+        { id: 0, name: "食事" },
+        { id: 1, name: "買い物" },
+        { id: 2, name: "エンタメ" },
+        { id: 3, name: "借金" },
+        { id: 4, name: "請求" },
+        { id: 5, name: "その他" }
+      ],
+      currency: [
+        'JPY',
+        'USD',
+        'EUR',
+        'GBP',
+        'CAD',
+        'AUD',
+        'NZD',
+        'CNY',
+        'KRW'
+      ],
       showDialog: false,
+      textDetectView: false,
+      image_params: {
+        image_base64: ""
+      },
+      uploadedImage: '',
+      textDetectResultView: false,
+      textDetectResult: '',
+      spinner: false,
       newFriend: {
         name: '',
         email: ''
@@ -118,10 +209,69 @@ export default {
       axios
         .post(`/api/users/${user.id}/friends`, this.newFriend)
       this.updateFriends();
+    },
+    textDetect: function() {
+      axios
+        .post(`/api/analyze/text_detect`, this.image_params)
+        .then(response => {
+          this.textDetectResult = response.data;
+          this.spinner = false;
+          this.textDetectResultView = true;
+        })
+    },
+    attachImg(e) {
+      const file = e.target.files[0];
+
+      loadImage.parseMetaData(file, (data) => {
+        const options = {
+          maxHeight: 300,
+          maxHeight: 300,
+          canvas: true
+        };
+        if (data.exif) {
+          options.orientation = data.exif.get('Orientation');
+        }
+        this.displayImage(file, options);
+      });
+    },
+    displayImage(file, options) {
+      loadImage(
+        file,
+        async (canvas) => {
+          const data = canvas.toDataURL(file.type);
+          this.image_params.image_base64 = data;
+          // data_url形式をblob objectに変換
+          const blob = this.base64ToBlob(data, file.type);
+          // objectのURLを生成
+          const url = window.URL.createObjectURL(blob);
+
+          this.uploadedImage = url; // resizedImgはdataで定義
+        },
+        options
+      );
+    },
+    base64ToBlob(base64, fileType) {
+      const bin = atob(base64.replace(/^.*,/, ''));
+      const buffer = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) {
+        buffer[i] = bin.charCodeAt(i);
+      }
+      return new Blob([buffer.buffer], {
+        type: fileType ? fileType : 'image/png'
+      });
+    },
+    removeImage() {
+      this.uploadedImage = false
+    },
+    textCopy() {
+      clipboard(this.textDetectResult.text);
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  .md-scrollbar {
+    overflow: auto;
+  }
 </style>

@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails, :update_paid]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -9,23 +9,58 @@ module Api
     end
 
     def index
-      bills = @user.bills.select(:id, :title, :price_cents, :payment_due_date)
-      res = bills.all.map {|bill| bill.attributes}
-      res.each do |h|
-        friend_id = Bill.find(h["id"]).debtor&.first&.friend_id
-        friend_name = ""
-        if friend_id
-          friend_name = Friend.find(friend_id).name
+      response = []
+      bills = @user.bills.order(paid: "ASC").order(created_at: "DESC")
+      bills.each do |bill|
+        res = bill.attributes
+
+        payment_late = payment_late?(bill.payment_due_date)
+
+        friends_res = []
+        bill.charges.each do |charge|
+          friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
         end
-        h.store("debtor", friend_name)
+        res.store("friends", friends_res)
+        res.store("price_format", bill.price.format)
+        res.store("payment_late", payment_late)
+        response << res
       end
-      render json: res.to_json
+      render json: response.to_json
     end
 
 
-    # billとdebtorを組み合わせて返す
+    # billとfriendを組み合わせて返す
     def show
-      render json: @bill
+      res = @bill.attributes
+      friends_res = []
+      @bill.charges.each do |charge|
+        friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
+      end
+      payment_late = payment_late?(@bill.payment_due_date)
+      
+      res.store("friends", friends_res)
+      res.store("category_i18n", @bill.category_i18n)
+      res.store("price_format", @bill.price.format)
+      res.store("payment_late", payment_late)
+      render json: res
+    end
+
+    # メール送信履歴を降順に返す
+    def sent_mails
+      res = []
+      @bill.charges.each do |charge|
+        friend_name = charge.friend.name
+        actions = charge.charge_actions
+        next if actions.empty?
+
+        actions.map(&:attributes).each do |ca|
+          ca["friend_name"] = friend_name
+          res << ca
+        end
+      end
+      response = res.empty? ? res : res.sort_by{|r| r["created_at"] }.reverse
+
+      render json: response
     end
 
     # Post params: {'bill': {...}, 'friends': [...]}
@@ -34,11 +69,11 @@ module Api
         @bill = @user.bills.new(bill_params)
         @bill.save!
         friend_params.each do |id|
-          @debtor = Debtor.new(bill_id: @bill.id, friend_id: id)
-          @debtor.save!
+          @charge = Charge.new(bill_id: @bill.id, friend_id: id)
+          @charge.save!
         end
       end
-      # NotificationMailer.send_notification_to_debtor(@user).deliver
+      
       render json: @bill, status: :created
     rescue
       render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
@@ -52,12 +87,45 @@ module Api
       end
     end
 
+    def update_paid
+      @charge = Charge.find(update_paid_params)
+      @charge.paid = true
+      @charge.save
+
+      if @bill.charges.map(&:paid).all? 
+        @bill.paid = true
+        @bill.save
+      end
+
+      head :no_content
+    end
+
     def destroy
       @bill.destroy!
       head :no_content
     end
 
+    # TODO: charge_actionの取り出し方を変える
+    def send_mail
+      @bill.charges.each do |charge|
+        if send_mail_params.include?(charge.id)
+          charge.charge_actions.new(action_type: 'notice').save
+          charge_action = charge.charge_actions.last
+          NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
+        end
+      end
+      render json: { status: "ok" }
+    end
+
     protected
+
+      def payment_late?(date)
+        Date.current > date
+      end
+
+      def get_friends(bill)
+        @bill.charges.map(&:friend)
+      end
 
       def set_user
         @user = User.where(id: params[:user_id]).first
@@ -71,8 +139,16 @@ module Api
         params.require(:friends)
       end
 
+      def send_mail_params
+        params.require(:charges)
+      end
+
+      def update_paid_params
+        params.require(:charge)
+      end
+
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :title, :description, :price_cents, :currency, :payment_due_date, :paid)
+        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :created_at, :updated_at)
       end
   end
 end

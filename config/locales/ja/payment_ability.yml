@@ -1,0 +1,6 @@
+ja:
+  charge_action_responses:
+    payment_ability:
+      fine: "大丈夫"
+      late: "支払いが遅れそう"
+      unknown: "わからない"
