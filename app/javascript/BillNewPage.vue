@@ -3,12 +3,12 @@
     <form novalidate class="md-layout" @submit.prevent="createBill">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
-          <div class="md-title">請求メモ作成</div>
+          <div class="md-title">請求メモ作成（Create a bill）</div>
         </md-card-header>
 
         <md-card-content>
           <md-field v-if="optionFriends.length > 0">
-            <label>貸した人（登録済みの友達）</label>
+            <label>貸した人（登録済みの友達）Debtor</label>
             <md-select v-model="params.friends" multiple>
               <md-option v-for="friend in optionFriends" v-bind:key="friend.id" v-bind:value="friend.id">{{ friend.name }}</md-option>
             </md-select>
@@ -18,11 +18,11 @@
             <md-dialog-title>友達の登録</md-dialog-title>
               <form novalidate class="md-layout" @submit="createFriend">
                 <md-field>
-                  <label>名前</label>
+                  <label>名前 (Name)</label>
                   <md-input v-model="newFriend.name" type="text"></md-input>
                 </md-field>
                 <md-field>
-                  <label>メールアドレス</label>
+                  <label>メールアドレス (email)</label>
                   <md-input v-model="newFriend.email" type="email" autocomplete="email"></md-input>
                 </md-field>
                 <md-dialog-actions>
@@ -32,7 +32,7 @@
               </form>
             </md-dialog>
 
-          <md-button class="md-primary" @click="showDialog = true">ともだちを登録する</md-button>
+          <md-button class="md-primary" @click="showDialog = true">ともだちを登録する (Add New Friend)</md-button>
           
           <md-field>
             <label>Category</label>
@@ -47,7 +47,7 @@
           </md-field>
 
           <md-button class="md-primary" @click="textDetectView=true">
-            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む
+            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む (Image Recognition)
           </md-button>
       
 
@@ -55,7 +55,7 @@
             <md-dialog-title>画像からテキストを読み込む</md-dialog-title>
               <form novalidate class="md-layout" @submit="textDetect">
                 <md-field>
-                  <label>画像を選択</label>
+                  <label>画像を選択 select Image</label>
                   <md-file accept="image/*" @change="attachImg" />
                 </md-field>
 
@@ -84,7 +84,7 @@
             <md-progress-spinner v-show="spinner" :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
 
             <md-dialog :md-active.sync="textDetectResultView" :md-click-outside-to-close=false>
-              <md-dialog-title>テキスト結果</md-dialog-title>
+              <md-dialog-title>テキスト結果 (Result)</md-dialog-title>
     
                 <md-content class="md-scrollbar" style="white-space:pre-wrap; word-wrap:break-word;">
                   {{ textDetectResult.text }}
@@ -97,26 +97,26 @@
             </md-dialog>
 
           <md-field>
-            <label>currency</label>
+            <label>通貨　(Currency)</label>
               <md-select v-model="params.bill.currency">
               <md-option v-for="c in currency" v-bind:key="c" v-bind:value="c">{{ c }}</md-option>
             </md-select>
           </md-field>
 
           <md-field>
-            <label>price</label>
+            <label>一人当たりの金額 (Price per person)</label>
             <md-input v-model="params.bill.price_cents" type="number"></md-input>
           </md-field>
           
 
           <md-datepicker v-model="params.bill.payment_due_date">
-            <label>支払い期限日</label>
+            <label>支払い期限日 (Payment due Date)</label>
           </md-datepicker>
         </md-card-content>
 
 
         <md-card-actions>
-          <md-button type="submit" class="md-primary md-raised">請求メモを作成</md-button>
+          <md-button type="submit" class="md-primary md-raised">Create!</md-button>
         </md-card-actions>
 
       </md-card>
@@ -208,9 +208,11 @@ export default {
     createFriend: function() {
       axios
         .post(`/api/users/${user.id}/friends`, this.newFriend)
-      this.updateFriends();
-      this.newFriend.name = '';
-      this.newFriend.email = ''
+        .then(response => {
+          this.optionFriends.push(response.data);
+          this.newFriend.name = '';
+          this.newFriend.email = '';
+        })
     },
     textDetect: function() {
       axios
