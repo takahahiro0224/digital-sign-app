@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resources :bills do
         member do
           post :send_mail
+          post :update_paid
           get :sent_mails
         end
       end

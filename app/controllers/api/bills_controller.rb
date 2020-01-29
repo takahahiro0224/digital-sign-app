@@ -1,7 +1,7 @@
 module Api
   class BillsController < ApplicationController
     before_action :set_user
-    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails]
+    before_action :set_bill, only: [:show, :update, :destroy, :send_mail, :sent_mails, :update_paid]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -10,14 +10,19 @@ module Api
 
     def index
       response = []
-      bills = @user.bills
-      res = bills.all.map {|bill| bill.attributes}
+      bills = @user.bills.order(paid: "ASC").order(created_at: "DESC")
       bills.each do |bill|
         res = bill.attributes
-        friends = bill.charges.map(&:friend)
-        friend_names = friends.map(&:name)
-        res.store("friends", friend_names)
+
+        payment_late = payment_late?(bill.payment_due_date)
+
+        friends_res = []
+        bill.charges.each do |charge|
+          friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
+        end
+        res.store("friends", friends_res)
         res.store("price_format", bill.price.format)
+        res.store("payment_late", payment_late)
         response << res
       end
       render json: response.to_json
@@ -27,12 +32,16 @@ module Api
     # billとfriendを組み合わせて返す
     def show
       res = @bill.attributes
-      friends = @bill.charges.map(&:friend)
-      friends_name = friends.map(&:name)
+      friends_res = []
+      @bill.charges.each do |charge|
+        friends_res << {'friend_id': charge.friend_id, 'charge_id': charge.id, 'name': charge.friend.name, 'paid': charge.paid}
+      end
+      payment_late = payment_late?(@bill.payment_due_date)
       
-      res.store("friends", friends_name)
+      res.store("friends", friends_res)
       res.store("category_i18n", @bill.category_i18n)
       res.store("price_format", @bill.price.format)
+      res.store("payment_late", payment_late)
       render json: res
     end
 
@@ -78,6 +87,19 @@ module Api
       end
     end
 
+    def update_paid
+      @charge = Charge.find(update_paid_params)
+      @charge.paid = true
+      @charge.save
+
+      if @bill.charges.map(&:paid).all? 
+        @bill.paid = true
+        @bill.save
+      end
+
+      head :no_content
+    end
+
     def destroy
       @bill.destroy!
       head :no_content
@@ -86,14 +108,20 @@ module Api
     # TODO: charge_actionの取り出し方を変える
     def send_mail
       @bill.charges.each do |charge|
-        charge.charge_actions.new(action_type: 'notice').save
-        charge_action = charge.charge_actions.last
-        NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
+        if send_mail_params.include?(charge.id)
+          charge.charge_actions.new(action_type: 'notice').save
+          charge_action = charge.charge_actions.last
+          NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
+        end
       end
       render json: { status: "ok" }
     end
 
     protected
+
+      def payment_late?(date)
+        Date.current > date
+      end
 
       def get_friends(bill)
         @bill.charges.map(&:friend)
@@ -109,6 +137,14 @@ module Api
 
       def friend_params
         params.require(:friends)
+      end
+
+      def send_mail_params
+        params.require(:charges)
+      end
+
+      def update_paid_params
+        params.require(:charge)
       end
 
       def bill_params
