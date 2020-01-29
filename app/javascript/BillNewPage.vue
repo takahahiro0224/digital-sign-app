@@ -46,56 +46,54 @@
             <md-textarea v-model="params.bill.description"></md-textarea>
           </md-field>
 
-          <md-field>
-          <md-button class="md-icon-button md-raised md-primary" @click="textDetectView=true">
-            <md-icon>add_a_photo</md-icon>
+          <md-button class="md-primary" @click="textDetectView=true">
+            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む
           </md-button>
-            <span>画像からテキストを取り込む</span>
-          </md-field>
+      
 
-          <md-dialog :md-active.sync="textDetectView">
+          <md-dialog :md-active.sync="textDetectView" :md-click-outside-to-close=false>
             <md-dialog-title>画像からテキストを読み込む</md-dialog-title>
               <form novalidate class="md-layout" @submit="textDetect">
                 <md-field>
                   <label>画像を選択</label>
-                  <md-file accept="image/*" @change="onFileChange" />
+                  <md-file accept="image/*" @change="attachImg" />
                 </md-field>
 
-                <md-card v-show="uploadedImage">
-                  <md-card-header md-medium>
-                  </md-card-header>
+                <md-dialog-actions>
+                  <md-button v-show="uploadedImage" class="md-primary" type="submit" @click="textDetectView=false; spinner=true;">To TEXT</md-button>
+                  <md-button class="md-primary" @click="textDetectView = false; removeImage;">Cancel</md-button>
+                </md-dialog-actions>
 
+                 <md-card v-show="uploadedImage">
+                  <md-card-header>
+                  </md-card-header>
+                  
+                  <md-card-content>
                   <md-card-media>
                     <img
                       :src="uploadedImage"
                       alt=""
-                      />
-                    </md-card-media>
-                  </md-card>
-
-                <md-dialog-actions>
-                  <md-button v-show="uploadedImage" class="md-primary" type="submit" @click="textDetectView=false">To TEXT</md-button>
-                  <md-button class="md-primary" @click="textDetectView = false; removeImage;">Cancel</md-button>
-                </md-dialog-actions>
+                     />
+                  </md-card-media>
+                  </md-card-content>
+                </md-card>
                
               </form>
             </md-dialog>
 
-            <md-dialog :md-active.sync="textDetectResultView">
+            <md-progress-spinner v-show="spinner" :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
+
+            <md-dialog :md-active.sync="textDetectResultView" :md-click-outside-to-close=false>
               <md-dialog-title>テキスト結果</md-dialog-title>
-              <md-card>
-                <md-card-content>
-                  <div class="md-scrollbar" style="white-space:pre-wrap; word-wrap:break-word;">
-                    {{ textDetectResult.text }}
-                  </div>
-                </md-card-content>
+    
+                <md-content class="md-scrollbar" style="white-space:pre-wrap; word-wrap:break-word;">
+                  {{ textDetectResult.text }}
+                </md-content>
 
-              </md-card>
-              <md-dialog-actions>
+                <md-dialog-actions>
                 <md-button @click="textCopy">COPY!</md-button>
-                <md-button @click="textDetectResultView=false">Close</md-button>
+                <md-button @click="textDetectResultView=false; uploadedImage=false;">Close</md-button>
               </md-dialog-actions>
-
             </md-dialog>
 
           <md-field>
@@ -120,6 +118,7 @@
         <md-card-actions>
           <md-button type="submit" class="md-primary md-raised">請求メモを作成</md-button>
         </md-card-actions>
+
       </md-card>
 
     </form>
@@ -134,6 +133,7 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import VueMaterial from 'vue-material'
 import clipboard from 'clipboard-copy';
+import loadImage from 'blueimp-load-image';
 
 Vue.use(VueMaterial)
 export default {
@@ -174,6 +174,7 @@ export default {
       uploadedImage: '',
       textDetectResultView: false,
       textDetectResult: '',
+      spinner: false,
       newFriend: {
         name: '',
         email: ''
@@ -214,22 +215,50 @@ export default {
         .post(`/api/analyze/text_detect`, this.image_params)
         .then(response => {
           this.textDetectResult = response.data;
+          this.spinner = false;
           this.textDetectResultView = true;
         })
     },
-    onFileChange(e) {
-      console.log(e)
-      const files = e.target.files || e.dataTransfer.files;
-      this.createImage(files[0]);
+    attachImg(e) {
+      const file = e.target.files[0];
+
+      loadImage.parseMetaData(file, (data) => {
+        const options = {
+          maxHeight: 300,
+          maxHeight: 300,
+          canvas: true
+        };
+        if (data.exif) {
+          options.orientation = data.exif.get('Orientation');
+        }
+        this.displayImage(file, options);
+      });
     },
-    createImage(file) {
-      const reader = new FileReader();
-      reader.onload = e => {
-        // uploadeImageはbase64
-        this.uploadedImage = e.target.result;
-        this.image_params.image_base64 = e.target.result;
-      };
-      reader.readAsDataURL(file);
+    displayImage(file, options) {
+      loadImage(
+        file,
+        async (canvas) => {
+          const data = canvas.toDataURL(file.type);
+          this.image_params.image_base64 = data;
+          // data_url形式をblob objectに変換
+          const blob = this.base64ToBlob(data, file.type);
+          // objectのURLを生成
+          const url = window.URL.createObjectURL(blob);
+
+          this.uploadedImage = url; // resizedImgはdataで定義
+        },
+        options
+      );
+    },
+    base64ToBlob(base64, fileType) {
+      const bin = atob(base64.replace(/^.*,/, ''));
+      const buffer = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) {
+        buffer[i] = bin.charCodeAt(i);
+      }
+      return new Blob([buffer.buffer], {
+        type: fileType ? fileType : 'image/png'
+      });
     },
     removeImage() {
       this.uploadedImage = false
@@ -242,4 +271,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .md-scrollbar {
+    overflow: auto;
+  }
 </style>
