@@ -1,3 +1,14 @@
+## このアプリについて
+借金請求管理・自動催促ツール
+
+## 技術スタック
+- Ruby: 2.6.3
+- Ruby on Rails: 6.0.1
+- mysql: 5.7.19
+- Vue.js: 2.6.10
+- UIフレームワーク Rails: Materialize, Vue: vue material
+
+
 ## 開発フロー
 masterブランチからfeatureブランチを切り、作業する
 作業が終わったらレビューし、レビューが終わったらmasterにmergeされる
@@ -25,12 +36,9 @@ docker-compose run web rails db:create
 docker-compose run web rails db:migrate
 ```
 #### フロントエンド(改定中）
-conflictなど起きたらとりあえずyesで
+ライブラリのインストール
 ```bash
-docker-compose run web rails webpacker:install
-```
-```bash
-docker-compose run web rails webpacker:install:vue
+docker-compose run web yarn install
 ```
 localhost:3000を開いてページが表示されていればok
 
@@ -47,6 +55,10 @@ docker-compose up
 ```bash
 docker-compose stop
 ```
+#### webpack-dev-server起動
+```
+docker-compose run web bin/webpack-dev-server
+```
 #### bashプロセスに入る(このプロセス内でrailsコマンドなど行う)
 ```bash
 docker exec -it digital-sign-app_web_1 /bin/bash
@@ -54,4 +66,6 @@ docker exec -it digital-sign-app_web_1 /bin/bash
 ## トラブルなど
 #### 適宜コンテナの再起動、再ビルド、Dockerの再起動を試してみてください
 #### コード変更に応じて適宜bundle installしてgemのインストールを行う
+#### DB変更した際はマイグレーションを行う
+#### その他不明点あれば私まで連絡ください
 

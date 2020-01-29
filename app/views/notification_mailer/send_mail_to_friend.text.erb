@@ -1,0 +1,15 @@
+<%= @friend.name %> 様
+
+ご連絡失礼致します。Money Collect運営でございます。
+この度、ご友人の<%= @user.username %>さんからの、請求依頼を
+承っておりますのでお知らせします。
+
+名目: <%= @bill.category %>
+金額: <%= @bill.price_cents %>円
+お支払い期限: <%= @bill.payment_due_date %>
+
+こちらのページで詳細をご確認ください
+localhost:3000/action/<%= @charge_action.token %>
+
+
+Money Collect運営

@@ -7,15 +7,20 @@
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "^4.2.2",
     "axios": "^0.19.1",
+    "clipboard-copy": "^3.1.0",
+    "jquery": "^3.4.1",
     "materialize-css": "^1.0.0",
     "turbolinks": "^5.2.0",
-    "vue": "^2.6.11",
-    "vue-loader": "^15.8.3",
+    "vue": "^2.6.10",
+    "vue-loader": "^15.7.2",
+    "vue-material": "^1.0.0-beta-11",
     "vue-router": "^3.1.5",
     "vue-template-compiler": "^2.6.11"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^3.10.1"
+
+    "blueimp-load-image": "^2.26.0",
+    "webpack-dev-server": "^3.9.0"
   }
 }
