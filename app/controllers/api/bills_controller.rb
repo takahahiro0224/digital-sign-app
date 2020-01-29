@@ -10,14 +10,16 @@ module Api
 
     def index
       response = []
-      bills = @user.bills
-      res = bills.all.map {|bill| bill.attributes}
+      bills = @user.bills.order(paid: "ASC").order(created_at: "DESC")
       bills.each do |bill|
         res = bill.attributes
+
+        payment_late = payment_late?(bill.payment_due_date)
         friends = bill.charges.map(&:friend)
         friend_names = friends.map(&:name)
         res.store("friends", friend_names)
         res.store("price_format", bill.price.format)
+        res.store("payment_late", payment_late)
         response << res
       end
       render json: response.to_json
@@ -28,11 +30,16 @@ module Api
     def show
       res = @bill.attributes
       friends = @bill.charges.map(&:friend)
-      friends_name = friends.map(&:name)
+      friends_res = []
+      friends.each do |friend|
+        friends_res << {'id': friend.id, 'name': friend.name}
+      end
+      payment_late = payment_late?(@bill.payment_due_date)
       
-      res.store("friends", friends_name)
+      res.store("friends", friends_res)
       res.store("category_i18n", @bill.category_i18n)
       res.store("price_format", @bill.price.format)
+      res.store("payment_late", payment_late)
       render json: res
     end
 
@@ -85,15 +92,22 @@ module Api
 
     # TODO: charge_actionの取り出し方を変える
     def send_mail
+      puts send_mail_params
       @bill.charges.each do |charge|
-        charge.charge_actions.new(action_type: 'notice').save
-        charge_action = charge.charge_actions.last
-        NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
+        if send_mail_params.include?(charge.friend_id)
+          charge.charge_actions.new(action_type: 'notice').save
+          charge_action = charge.charge_actions.last
+          NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
+        end
       end
       render json: { status: "ok" }
     end
 
     protected
+
+      def payment_late?(date)
+        Date.current > date
+      end
 
       def get_friends(bill)
         @bill.charges.map(&:friend)
@@ -108,6 +122,10 @@ module Api
       end
 
       def friend_params
+        params.require(:friends)
+      end
+
+      def send_mail_params
         params.require(:friends)
       end
 

@@ -1,38 +1,44 @@
 <template>
-  <div>
-    <md-table md-card>
-      <md-table-toolbar>
-        <h1 class="md-title">請求一覧</h1>
-      </md-table-toolbar>
-
-      <md-table-row>
-        <md-table-head>カテゴリ</md-table-head>
-        <md-table-head>金額</md-table-head>
-        <md-table-head>貸した人・請求する人</md-table-head>
-        <md-table-head>支払い期限日</md-table-head>
-      </md-table-row>
-
-      <md-table-row v-for="b in bills" :key="b.id">
-        <md-table-cell>{{ categories[b.category] }}</md-table-cell>
-        <md-table-cell>{{ b.price_format }}</md-table-cell>
-        <md-table-cell>{{ b.friends.join(', ')}}</md-table-cell>
-        <md-table-cell>{{ b.payment_due_date }}</md-table-cell>
-
-        <md-table-cell>
-          <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
-            <router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">
-            <md-icon>launch</md-icon>
-            </router-link>
-          </md-button>
-        </md-table-cell>
-
-        <md-table-cell>
-          <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
-            <md-icon>delete</md-icon>
-          </md-button>
-        </md-table-cell>
-      </md-table-row>
-    </md-table>
+   <div class="card-expansion">
+    <md-card v-for="b in bills" :key="b.id">
+       <md-card-header>
+         <div class="md-title">{{ categories[b.category ]}}</div>
+         <div v-if="b.paid">
+          <div class= "md-subhead">支払い済み</div>
+         </div>
+       </md-card-header>
+       <md-card-content>
+         <div>
+           <md-chip class="md-primary" v-for="friend in b.friends" :key="friend">{{ friend }}</md-chip>
+         </div>
+       </md-card-content>
+       <md-card-content>
+         <div>
+           <md-icon>money</md-icon>
+           <span>{{ b.price_format }}</span>
+         </div>
+         <div>
+          <div v-if="b.payment_late">
+            <md-icon>schedule</md-icon>
+            <span class="late">{{ b.payment_due_date }}</span>
+          </div>
+          <div v-else>
+            <md-icon>schedule</md-icon>
+            <span>{{ b.payment_due_date }}</span>
+          </div>
+         </div>
+       </md-card-content>
+       <md-card-actions>
+         <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
+           <router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">
+           <md-icon>launch</md-icon>
+           </router-link>
+         </md-button>
+         <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
+           <md-icon>delete</md-icon>
+         </md-button>
+       </md-card-actions>
+    </md-card>
 
     <md-dialog-confirm
       :md-active.sync="showModal"
@@ -42,13 +48,6 @@
       @md-cancel="showModal = false"
       @md-confirm="deleteBill(); showModal = false;" />    
     
-
-    <md-speed-dial class="md-bottom-right">
-      <md-speed-dial-target to="/bills/new">
-        <md-icon>add</md-icon>
-      </md-speed-dial-target>
-    </md-speed-dial>
-
   </div>
 </template>
 
@@ -112,6 +111,9 @@ export default {
 p {
   font-size: 2em;
   text-align: center;
+}
+.late {
+  color: red;
 }
 
 </style>
