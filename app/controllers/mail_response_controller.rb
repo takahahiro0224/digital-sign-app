@@ -13,7 +13,6 @@ class MailResponseController < ApplicationController
 
   # commentを自然言語処理にかけてDBに結果を保存
   def create
-    puts response_params
     response = ChargeActionResponse.new(response_params)
     response.charge_action = @charge_action
 

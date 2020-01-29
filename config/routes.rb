@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
   get "dashbord" => "dashbord#index"
   namespace :api do
+    post "analyze/text_detect", to: 'analyze#text_detect'
     resources :users, only: [:index, :show] do
       resources :bills do
         member do
@@ -24,7 +25,6 @@ Rails.application.routes.draw do
         end
       end
       resources :friends
-
     end
     mount_devise_token_auth_for 'User', at: 'auth', controllers: {
         registrations: 'api/auth/registrations'
