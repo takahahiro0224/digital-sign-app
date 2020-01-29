@@ -209,6 +209,8 @@ export default {
       axios
         .post(`/api/users/${user.id}/friends`, this.newFriend)
       this.updateFriends();
+      this.newFriend.name = '';
+      this.newFriend.email = ''
     },
     textDetect: function() {
       axios

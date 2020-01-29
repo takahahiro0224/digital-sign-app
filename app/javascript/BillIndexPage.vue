@@ -24,7 +24,7 @@
            <span>{{ b.price_format }}</span>
          </div>
          <div>
-          <div v-if="b.payment_late">
+          <div v-if="b.payment_late && b.paid == false">
             <md-icon>schedule</md-icon>
             <span class="late">{{ b.payment_due_date }}</span>
           </div>

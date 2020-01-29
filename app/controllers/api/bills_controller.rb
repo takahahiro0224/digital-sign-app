@@ -55,6 +55,7 @@ module Api
 
         actions.map(&:attributes).each do |ca|
           ca["friend_name"] = friend_name
+          ca["sent_at"] = ca["created_at"].to_datetime.to_s
           res << ca
         end
       end
@@ -90,12 +91,18 @@ module Api
     def update_paid
       @charge = Charge.find(update_paid_params)
       @charge.paid = true
+      @charge.paid_at = Time.current
       @charge.save
 
       if @bill.charges.map(&:paid).all? 
         @bill.paid = true
         @bill.save
       end
+      
+      friend = @charge.friend
+      cal = MachineLearning::CreditScore.new(friend)
+      friend.credit_score = cal.calcurate
+      friend.save
 
       head :no_content
     end
@@ -118,6 +125,7 @@ module Api
     end
 
     protected
+
 
       def payment_late?(date)
         Date.current > date

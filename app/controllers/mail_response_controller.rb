@@ -18,13 +18,17 @@ class MailResponseController < ApplicationController
 
     nl = MachineLearning::NaturalLanguage.new
     nl_res = nl.analyze_sentiment(response.comment)
-    
     if nl_res
       response.comment_score = nl_res[:score]
       response.comment_magnitude = nl_res[:magnitude]
     end
 
+    @charge = @charge_action.charge
     if response.save
+      friend = @charge.friend
+      cal = MachineLearning::CreditScore.new(friend)
+      friend.credit_score = cal.calcurate
+      friend.save
       redirect_to '/done'
     else
       render 'new'
