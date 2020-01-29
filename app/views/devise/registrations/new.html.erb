@@ -1,34 +1,86 @@
-<h2>Sign up</h2>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      html,
+      body {
+          height: 100%;
+      }
+      html {
+          display: table;
+          margin: auto;
+      }
+      body {
+          display: table-cell;
+          vertical-align: middle;
+          background: #4ECDC4;
+      }
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+      #signup-page {
+        width: 500px;
+      }
 
-<div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username, autofocus: true %>
-  </div>
+      .card {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          -moz-transform: translate(-50%, -50%)
+          -webkit-transform: translate(-50%, -50%)
+          -ms-transform: translate(-50%, -50%)
+          -o-transform: translate(-50%, -50%)
+          transform: translate(-50%, -50%);
+      } 
+    </style>
+  </head>
+  <h2>新規登録</h2>
+    <body ng-app="mainModule" ng-controller="mainController">
+      <div id="signup-page" class="row">
+        <div class="col s12 z-depth-6 card-panel">
+          <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+            <div class="row">
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">create</i>
+                <%= f.text_field :username, autofocus: true %>
+                <label for="username" data-error="wrong" data-success="right">Username</label>
+              </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">mail_outline</i>
+                    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+                  <label for="email" data-error="wrong" data-success="right">Email</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                  <i class="material-icons prefix">lock_outline</i>
+                  <% if @minimum_password_length %>
+                    <em>(<%= @minimum_password_length %> characters minimum)</em>
+                  <% end %>
+                  <%= f.password_field :password, autocomplete: "new-password" %>
+                  <label for="password">Password</label>
+                </div>
+            </div>
+            <div class="row">
+              <div class="input-field col s12">
+                <i class="material-icons prefix">spellcheck</i>
+              <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+              <label for="password">Password Confirmation</label>
+              </div>
+            </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %> 
-
-<%= render "devise/shared/links" %>
+            <div class="row">
+              <div class="input-field col s12 actions">
+                <input type = "submit" value = "Sign Up" class="btn waves-effect waves-light col s12">
+              </div>
+            </div>        
+            <%= render "devise/shared/links" %>
+          <% end %>
+        </div>
+      </div>
+    </body>
+</html>
