@@ -57,21 +57,46 @@
             <md-dialog-title>画像からテキストを読み込む</md-dialog-title>
               <form novalidate class="md-layout" @submit="textDetect">
                 <md-field>
-                  <label>画像からテキストを取り込む</label>
-                  <md-file  v-model="image" accept="image/*" />
+                  <label>画像を選択</label>
+                  <md-file accept="image/*" @change="onFileChange" />
                 </md-field>
+
+                <md-card v-show="uploadedImage">
+                  <md-card-header md-medium>
+                  </md-card-header>
+
+                  <md-card-media>
+                    <img
+                      :src="uploadedImage"
+                      alt=""
+                      />
+                    </md-card-media>
+                  </md-card>
+
                 <md-dialog-actions>
-                  <md-button class="md-primary" type="submit" @click="textDetectView = false">Send</md-button>
-                  <md-button class="md-primary" @click="textDetectView = false">Cancel</md-button>
+                  <md-button v-show="uploadedImage" class="md-primary" type="submit" @click="textDetectView=false">To TEXT</md-button>
+                  <md-button class="md-primary" @click="textDetectView = false; removeImage;">Cancel</md-button>
                 </md-dialog-actions>
+               
               </form>
             </md-dialog>
-          
-         
-          <md-field>
-            <label>画像からテキストを取り込む</label>
-            <md-file  accept="image/*" />
-          </md-field>
+
+            <md-dialog :md-active.sync="textDetectResultView">
+              <md-dialog-title>テキスト結果</md-dialog-title>
+              <md-card>
+                <md-card-content>
+                  <div class="md-scrollbar" style="white-space:pre-wrap; word-wrap:break-word;">
+                    {{ textDetectResult.text }}
+                  </div>
+                </md-card-content>
+
+              </md-card>
+              <md-dialog-actions>
+                <md-button @click="textCopy">COPY!</md-button>
+                <md-button @click="textDetectResultView=false">Close</md-button>
+              </md-dialog-actions>
+
+            </md-dialog>
 
           <md-field>
             <label>currency</label>
@@ -108,6 +133,7 @@ import axios from 'axios';
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import VueMaterial from 'vue-material'
+import clipboard from 'clipboard-copy';
 
 Vue.use(VueMaterial)
 export default {
@@ -142,7 +168,12 @@ export default {
       ],
       showDialog: false,
       textDetectView: false,
-      image: "",
+      image_params: {
+        image_base64: ""
+      },
+      uploadedImage: '',
+      textDetectResultView: false,
+      textDetectResult: '',
       newFriend: {
         name: '',
         email: ''
@@ -180,7 +211,31 @@ export default {
     },
     textDetect: function() {
       axios
-        .post(`/api/analyze/text_detect`, this.image)
+        .post(`/api/analyze/text_detect`, this.image_params)
+        .then(response => {
+          this.textDetectResult = response.data;
+          this.textDetectResultView = true;
+        })
+    },
+    onFileChange(e) {
+      console.log(e)
+      const files = e.target.files || e.dataTransfer.files;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        // uploadeImageはbase64
+        this.uploadedImage = e.target.result;
+        this.image_params.image_base64 = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage() {
+      this.uploadedImage = false
+    },
+    textCopy() {
+      clipboard(this.textDetectResult.text);
     }
   }
 }

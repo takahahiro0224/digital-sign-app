@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   get "dashbord" => "dashbord#index"
   namespace :api do
-    post "analyze/text_detect", to: 'api/analyze#text_detect'
+    post "analyze/text_detect", to: 'analyze#text_detect'
     resources :users, only: [:index, :show] do
       resources :bills do
         member do

@@ -14,7 +14,7 @@ module MachineLearning
     def text_detection(image)
       uri = URI.parse("https://vision.googleapis.com/v1/images:annotate?key=#{API_KEY}")
       request = Net::HTTP::Post.new(uri)
-      
+
       request.content_type = "application/json"
       request.body = ""
 
@@ -24,7 +24,7 @@ module MachineLearning
           {
             "image" =>
             {
-              "content" => Base64.strict_encode64(open(image).read)
+              "content" => image
             },
             "features" =>
             [
@@ -46,6 +46,7 @@ module MachineLearning
           http.request(request)
         end
         json = JSON.parse(response.body)
+
         result = json["responses"][0]["fullTextAnnotation"]["text"]
       
       rescue StandardError => e
@@ -54,6 +55,5 @@ module MachineLearning
       end
       result
     end
-
   end
 end
