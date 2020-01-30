@@ -81,6 +81,13 @@
               </form>
             </md-dialog>
 
+            <md-dialog :md-active.sync="imageRecognitionError">
+              <md-dialog-title>問題が発生しました。再度お試しください。</md-dialog-title>
+              <md-dialog-actions>
+                <md-button @click="imageRecognitionError=false;">OK</md-button>
+              </md-dialog-actions>
+            </md-dialog>
+
             <md-progress-spinner v-show="spinner" :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
 
             <md-dialog :md-active.sync="textDetectResultView" :md-click-outside-to-close=false>
@@ -174,6 +181,7 @@ export default {
       uploadedImage: '',
       textDetectResultView: false,
       textDetectResult: '',
+      imageRecognitionError: false,
       spinner: false,
       newFriend: {
         name: '',
@@ -218,9 +226,14 @@ export default {
       axios
         .post(`/api/analyze/text_detect`, this.image_params)
         .then(response => {
+          if (response.data.message == "error") {
+            this.spinner = false;
+            this.imageRecognitionError = true;
+          } else {
           this.textDetectResult = response.data;
           this.spinner = false;
           this.textDetectResultView = true;
+          }
         })
     },
     attachImg(e) {
