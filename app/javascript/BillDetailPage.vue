@@ -10,8 +10,11 @@
                 <b>支払い済み</b>
             </div>
             <div v-else class="title-content">
-            <b class=late>支払い未完了</b>
-          </div>
+              <b class=late>支払い未完了</b>
+            </div>
+            <div v-if="bill.paid==false" class="title-content">
+              &nbsp;&nbsp;<b>自動メール{{ autoMailSelect[bill.auto_mail] }}</b>
+            </div>
           </div>
         </md-card-header-text>
 
@@ -20,10 +23,21 @@
             <md-icon>more_vert</md-icon>
           </md-button>
           <md-menu-content>
-            <md-menu-item>
-              <span>Send a message</span>
-              <md-icon>message</md-icon>
+            <md-menu-item @click="selectMailUser=true">
+              <span>メール送信</span>
+              <md-icon>mail</md-icon>
             </md-menu-item>
+
+            <md-menu-item @click="setAutoMailView=true">
+              <span>自動メール設定</span>
+              <md-icon>settings</md-icon>
+            </md-menu-item>
+             
+            <md-menu-item >
+              <span>編集/Edit</span>
+              <md-icon>create</md-icon>
+            </md-menu-item>
+
           </md-menu-content>
         </md-menu>
       </md-card-header>
@@ -81,26 +95,7 @@
         </div>
       </md-card-content>
      
-    
-      <md-card-actions md-alignment="left" v-if="bill.paid==false">  
-        <div v-if="bill.friends.length > 1">
-          <md-button v-on:click="selectMailUser=true">メール送信</md-button>
-        </div>
-        <div v-else>
-          <md-button v-on:click="mailConfirmDialog=true">メール送信</md-button>
-        </div>
-      </md-card-actions>
     </md-card>
-
-   
-
-    <md-dialog :md-active.sync="mailConfirmDialog">
-      <md-dialog-title>請求メールを請求先のユーザーに送信してもよろしいですか？</md-dialog-title>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="sendMail">Send Mail</md-button>
-        <md-button class="md-primary" @click="mailConfirmDialog=false">Cancel</md-button>
-      </md-dialog-actions>
-    </md-dialog>
 
     <md-dialog :md-active.sync="selectMailUser" :md-click-outside-to-close=false>
       <md-dialog-title>請求メールを送信するユーザーを選んでください</md-dialog-title>
@@ -117,6 +112,24 @@
           <md-button class="md-primary" @click="selectMailUser=false">Cancel</md-button>
         </md-dialog-actions>
       </form>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="setAutoMailView" :md-click-outside-to-close=false>
+      <md-dialog-title>自動メールの設定</md-dialog-title>
+
+      <div class="dialog-message">
+        <md-switch v-model="billEditParams.auto_mail">{{ autoMailSelect[bill.auto_mail] }}</md-switch>
+      </div>
+      <div class= "dialog-message">
+        <p>ONにすると請求書に紐づけられた友人に返済のリマインドメール・アラートメールを自動で送信します。
+        送信のタイミングはリマインドは返済日の１日前、アラートは返済期限が過ぎてから3日ごとに送られます。</p> 
+      </div>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="updateBill">Save</md-button>
+        <md-button class="md-primary" @click=" setAutoMailView= false">Cancel</md-button>
+      </md-dialog-actions>
+
     </md-dialog>
 
     <md-dialog :md-active.sync="managePaidView" :md-click-outside-to-close=false>
@@ -166,11 +179,21 @@ export default {
     return {
       bill: {
         created_at: '',
+        auto_mail: false,
         friends: []
       },
+      billEditParams: {
+        description: '',
+        payment_due_date: '',
+        auto_mail: '',
+      },
+      autoMailSelect: {
+        true: 'ON',
+        false: 'OFF'
+      },
       sentMails: [],
-      mailConfirmDialog: false,
       selectMailUser: false,
+      setAutoMailView: false,
       managePaidView: false,
       selectedFriend: false,
       mailFriends: [],
@@ -188,19 +211,29 @@ export default {
     }
   },
   mounted () {
-    axios
-      .get(`/api/users/${user.id}/bills/${this.$route.params.id}.json`)
-      .then(response => (this.bill = response.data))
-
-    axios
-        .get(`/api/users/${user.id}/bills/${this.$route.params.id}/sent_mails`)
-        .then(response => (this.sentMails = response.data))
+    this.getBill();
+    this.getSentMails();
   },
   methods: {
-    updatePaid: function() {
-      this.bill.paid = true;
+    getBill: function() {
       axios
-        .patch(`/api/users/${user.id}/bills/${this.bill.id}`, this.bill)
+        .get(`/api/users/${user.id}/bills/${this.$route.params.id}.json`)
+        .then(response => {
+          this.bill = response.data;
+          this.billEditParams.description = response.data.description;
+          this.billEditParams.payment_due_date = response.data.payment_due_date;
+          this.billEditParams.auto_mail = response.data.auto_mail;
+        })
+    },
+    getSentMails: function() {
+      axios
+        .get(`/api/users/${user.id}/bills/${this.$route.params.id}/sent_mails`)
+        .then(response => (this.sentMails = response.data))
+    },
+    updateBill: function() {
+      this.setAutoMailView = false
+      axios
+        .patch(`/api/users/${user.id}/bills/${this.$route.params.id}`, this.billEditParams)
         .then(response => {
           this.$router.go({path: this.$router.currentRoute.path, force: true})
         })
@@ -249,5 +282,8 @@ export default {
   }
   .category {
     text-align: center;
+  }
+  .dialog-message {
+    margin: 10px;
   }
 </style>

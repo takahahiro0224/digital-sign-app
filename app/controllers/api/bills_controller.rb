@@ -163,7 +163,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :created_at, :updated_at)
+        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :auto_mail, :created_at, :updated_at)
       end
   end
 end
