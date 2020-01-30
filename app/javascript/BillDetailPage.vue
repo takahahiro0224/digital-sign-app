@@ -3,28 +3,23 @@
     <md-card>
       <md-card-header>
         <md-card-header-text>
-          <div class="md-title">{{ bill.category_i18n }}</div>
+          <div>
+            <div class="md-title title-content">{{ bill.category_i18n }}</div>&nbsp;&nbsp;
         
-          <div v-if="bill.paid">
-              <b>支払い済み</b>
-          </div>
-          <div v-else>
+            <div class="title-content" v-if="bill.paid">
+                <b>支払い済み</b>
+            </div>
+            <div v-else class="title-content">
             <b class=late>支払い未完了</b>
           </div>
-          <div class="md-subhead">{{ bill.description }}</div>
+          </div>
         </md-card-header-text>
 
         <md-menu md-size="big" md-direction="bottom-end">
           <md-button class="md-icon-button" md-menu-trigger>
             <md-icon>more_vert</md-icon>
           </md-button>
-
           <md-menu-content>
-            <md-menu-item >
-              <span>Call</span>
-              <md-icon>phone</md-icon>
-            </md-menu-item>
-
             <md-menu-item>
               <span>Send a message</span>
               <md-icon>message</md-icon>
@@ -33,34 +28,61 @@
         </md-menu>
       </md-card-header>
 
+      <md-card-content style="white-space:pre-wrap; word-wrap:break-word;">
+        {{ bill.description }}
+      </md-card-content>
+      
       <md-card-content>
         <div>
-          <md-icon>money</md-icon>
-          <span>{{ bill.price_format }}</span>
-        </div>
-        <div>
-          <div v-if="bill.payment_late && bill.paid == false">
-            <md-icon>schedule</md-icon>
-            <span class="late">{{ bill.payment_due_date }}</span>
-          </div>
-          <div v-else>
-            <md-icon>schedule</md-icon>
-            <span>{{ bill.payment_due_date }}</span>
-          </div>
-        </div>
-      </md-card-content>
+          <md-content class="statical">
+            <div>
+              <p class="category"> 金額 </p>
+              <div>
+                <span>{{ bill.price_format }}</span>
+              </div>
+            </div>
+           </md-content>
 
-      <md-card-content> 
-       <md-chip md-clickable @click="selectedFriend=friend; managePaidView=true" class="md-accent" v-for="friend in bill.friends.filter(friend=> friend.paid==false)" :key="friend.charge_id">
+           <md-content class="statical">
+            <div>
+              <p class="category">作成日</p>
+              <span>{{ bill.created_at.slice(0,10) }}</span>
+            </div>
+          </md-content>
+
+           <md-content class="statical"> 
+            <div>
+              <p class="category"> 支払い期限 </p>
+              <div v-if="bill.payment_late && bill.paid == false">
+                <md-icon>schedule</md-icon>
+                <span class="late">{{ bill.payment_due_date }}</span>
+              </div>
+              <div v-else>
+                <md-icon>schedule</md-icon>
+                <span>{{ bill.payment_due_date }}</span>
+              </div>
+            </div>
+          </md-content>
+
+          <md-content class="statical">
+            <div>
+              <p class="category">請求先</p>
+              <div>
+                <md-chip md-clickable @click="selectedFriend=friend; managePaidView=true" class="md-accent" v-for="friend in bill.friends.filter(friend=> friend.paid==false)" :key="friend.charge_id">
          {{ friend.name }}
        </md-chip>
        <md-chip class="md-primary" v-for="friend in bill.friends.filter(friend=> friend.paid==true)" :key="friend.charge_id">
          {{ friend.name }}
         </md-chip>
+              </div>
+            </div>
+          </md-content>
+          
+        </div>
       </md-card-content>
+     
     
-      <md-card-actions md-alignment="left" v-if="bill.paid==false">
-        
+      <md-card-actions md-alignment="left" v-if="bill.paid==false">  
         <div v-if="bill.friends.length > 1">
           <md-button v-on:click="selectMailUser=true">メール送信</md-button>
         </div>
@@ -143,6 +165,7 @@ export default {
   data: function () {
     return {
       bill: {
+        created_at: '',
         friends: []
       },
       sentMails: [],
@@ -211,5 +234,20 @@ export default {
 <style scoped>
   .late {
     color: red;
+  }
+  
+  .title-content {
+    display: inline-flex;
+  }
+ 
+  .statical {
+    width: 150px;
+    height: 100px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .category {
+    text-align: center;
   }
 </style>

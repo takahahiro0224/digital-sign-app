@@ -4,7 +4,10 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">Money Collect ver.β</span>
+      <router-link to="/">
+      <span class="md-title toBold">Money Collect ver.β</span>
+      </router-link>
+      
 
       <div class="md-toolbar-section-end">
         <md-button @click="showSidepanel = true">Account</md-button>
@@ -80,6 +83,7 @@ import BillNewPage from 'BillNewPage.vue'
 import BillEditPage from 'BillEditPage.vue'
 import Contact from 'Contact.vue'
 import Friends from 'FriendIndexPage.vue'
+import FriendDetailPage from 'FriendDetailPage.vue'
 
 // vue-material
 import 'vue-material/dist/vue-material.min.css'
@@ -87,8 +91,10 @@ import 'vue-material/dist/theme/default.css'
 import VueMaterial from 'vue-material'
 
 const router = new VueRouter({
+  //mode: 'history',
   routes: [
     { path: '/',
+      name: 'BillIndexPage',
       component: BillIndexPage  },
     { path: '/bills/:id(\\d+)',
       name: 'BillDetailPage',
@@ -104,7 +110,10 @@ const router = new VueRouter({
       component: Contact },
     { path: '/friends',
       neme: 'Friends',
-      component: Friends }
+      component: Friends },
+    { path: '/friends/:id(\\d+)',
+      name: 'FriendDetailPage',
+      component: FriendDetailPage }
   ]
 })
 
@@ -145,5 +154,8 @@ export default {
   }
   .md-list-item-text {
     color: black;
+  }
+  .toBold {
+    font-weight: bold;
   }
 </style>

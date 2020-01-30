@@ -16,7 +16,7 @@ module MachineLearning
             hour_diff = time_diff/60/60
             score -= hour_diff * 0.2
           else
-            score =+ 6
+            score += 6
           end
         end
 
@@ -25,7 +25,8 @@ module MachineLearning
         charge.charge_actions do |charge_action|
           comment_scores = 0
           respnose_cnt = 0
-          if  response = charge_action.charge_action_response
+          response = charge_action.charge_action_response
+          unless response.comment_score.blank?
             response_cnt += 1
             comment_scores += (1+response.comment_score)**2 *(1+response.comment_magnitude)
           end

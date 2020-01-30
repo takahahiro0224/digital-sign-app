@@ -92,6 +92,9 @@ module Api
       @charge = Charge.find(update_paid_params)
       @charge.paid = true
       @charge.paid_at = Time.current
+      if @charge.paid_at > (@charge.bill.payment_due_date+1)
+        @charge.late = true
+      end
       @charge.save
 
       if @bill.charges.map(&:paid).all? 
@@ -128,7 +131,11 @@ module Api
 
 
       def payment_late?(date)
-        Date.current > date
+        unless date.blank?
+          Date.current > date
+        else
+          false
+        end
       end
 
       def get_friends(bill)
