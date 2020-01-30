@@ -80,6 +80,7 @@ import BillNewPage from 'BillNewPage.vue'
 import BillEditPage from 'BillEditPage.vue'
 import Contact from 'Contact.vue'
 import Friends from 'FriendIndexPage.vue'
+import FriendDetailPage from 'FriendDetailPage.vue'
 
 // vue-material
 import 'vue-material/dist/vue-material.min.css'
@@ -104,7 +105,10 @@ const router = new VueRouter({
       component: Contact },
     { path: '/friends',
       neme: 'Friends',
-      component: Friends }
+      component: Friends },
+    { path: '/friens/:id(\\d+)',
+      name: 'FriendDetailPage',
+      component: FriendDetailPage }
   ]
 })
 
