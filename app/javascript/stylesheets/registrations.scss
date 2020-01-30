@@ -1,0 +1,36 @@
+/* app/views/devise/registrations/new.html.erb */
+/* body以下のスタイルを記述 */
+.registrations {
+  /* body */
+  display: table;
+  margin: auto;
+  background: #e0f7fa;
+  
+  .main-container {
+  display: table-cell;
+  vertical-align: middle;
+  }
+
+  h4 {
+    text-align: center;
+  }
+
+
+
+  #signup-page {
+    width: 500px;
+  }
+
+
+  .card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -moz-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
+} 
