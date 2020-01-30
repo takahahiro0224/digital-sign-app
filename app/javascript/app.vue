@@ -91,8 +91,10 @@ import 'vue-material/dist/theme/default.css'
 import VueMaterial from 'vue-material'
 
 const router = new VueRouter({
+  //mode: 'history',
   routes: [
     { path: '/',
+      name: 'BillIndexPage',
       component: BillIndexPage  },
     { path: '/bills/:id(\\d+)',
       name: 'BillDetailPage',

@@ -131,7 +131,11 @@ module Api
 
 
       def payment_late?(date)
-        Date.current > date
+        unless date.blank?
+          Date.current > date
+        else
+          false
+        end
       end
 
       def get_friends(bill)
