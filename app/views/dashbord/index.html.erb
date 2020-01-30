@@ -1,9 +1,14 @@
 <script>
-    user = window.user = {};
-    user.id = <%= @current_user.id %>;
+  user = window.user = {};
+  user.id = <%= @current_user.id %>;
+
+  var username = "<%= @current_user.username %>";
+  var email = "<%= @current_user.email %>";
 </script>
 <div id="app">
 </div>
-<p>ログイン中：<%= @current_user.username %>さん</p>
+<span>Logged in：<%= @current_user.username %></span>
+<span>&nbsp;&nbsp;&nbsp;</span>
+<%= link_to "Logout", "/logout" %>
 <%= javascript_pack_tag 'hello_vue' %>
 
