@@ -1,8 +1,9 @@
 <template>
-   <div class="card-expansion">
+   <div>
+    <div v-if="bills.length > 0">
     <md-card v-for="b in bills" :key="b.id">
        <md-card-header>
-         <div class="md-title">{{ categories[b.category ]}}</div>
+         <div class="md-title">{{ categories[b.category]}}</div>
          <div v-if="b.paid">
               <b>支払い済み</b>
           </div>
@@ -24,7 +25,7 @@
            <span>{{ b.price_format }}</span>
          </div>
          <div>
-          <div v-if="b.payment_late">
+          <div v-if="b.payment_late && b.paid == false">
             <md-icon>schedule</md-icon>
             <span class="late">{{ b.payment_due_date }}</span>
           </div>
@@ -45,7 +46,15 @@
          </md-button>
        </md-card-actions>
     </md-card>
-
+    </div>
+    <div v-else>
+    <md-empty-state id="no-show"
+      md-icon="devices_other"
+      md-label="最初の請求書を作りましょう"
+      md-description="By creating your bill, you will be able to manage your  money and remind your friends by sending an e-mail">
+      <md-button class="md-primary md-raised" to="/bills/new">Create first Bill</md-button>
+    </md-empty-state>
+    </div>
     <md-dialog-confirm
       :md-active.sync="showModal"
       md-title="この請求メモを削除しますか？"
@@ -67,6 +76,7 @@ export default {
   },
   data: function () {
     return {
+      emptyState: false,
       bills: [
       ],
       showModal: false,
@@ -109,6 +119,19 @@ export default {
       axios
         .get(`/api/users/${user.id}/bills.json`)
         .then(response => (this.bills = response.data))
+      this.isEmptyState();
+    },
+    isEmptyState: function() {
+      if (this.bills == "") {
+        const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+        const no_show = document.getElementById("no-show");
+        (async () => {
+      
+          await sleep(500);
+          no_show.style.display ="block";
+
+        })();
+      }
     }
   }
 }
@@ -122,5 +145,12 @@ p {
 .late {
   color: red;
 }
+[v-cloak] {
+      display: none;
+    }
+#no-show {
+  display: none;
+}
+
 
 </style>

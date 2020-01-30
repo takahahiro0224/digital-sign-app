@@ -8,7 +8,7 @@ module Api
     end
 
     def index
-      friends = @user.friends.all
+      friends = @user.friends
       render json: friends
     end
 

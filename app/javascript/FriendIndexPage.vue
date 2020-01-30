@@ -1,24 +1,22 @@
 <template>
 <div>
-    <md-list class="md-triple-line">
-      <md-list-item v-for="f in friends" :key="f.id">
-    
-        <md-icon>account_circle</md-icon>
+     <h5>Friends</h5>
+      <md-card v-for="f in friends" :key= "f.id"> 
+      <md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{ f.name }}</div>
+          <div class="md-subhead">{{ f.email }}</div>
+        </md-card-header-text>
 
-        <div class="md-list-item-text">
-          <span>{{ f.name }}</span>
-          <span>{{ f.email }}</span>
-        </div>
+        <md-card-media>
+          <h4>{{ f.credit_score }}</h4><span>score</span>
+        </md-card-media>
+      </md-card-header>
 
-        <md-button class="md-icon-button md-list-action">
-          <md-icon class="md-primary">star</md-icon>
-        </md-button>
-      </md-list-item>
-
-      <md-divider class="md-inset"></md-divider>
-
-      
-    </md-list>
+      <md-card-actions>
+        <md-button>Action</md-button>
+      </md-card-actions>
+    </md-card>
   </div>
     
 </template>
@@ -51,11 +49,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .md-list {
-    width: 400px;
-    max-width: 100%;
+  .md-card {
+    width: 320px;
+    margin: 4px;
     display: inline-block;
     vertical-align: top;
-    border: 1px solid rgba(#000, .12);
   }
 </style>

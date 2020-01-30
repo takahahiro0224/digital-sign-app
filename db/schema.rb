@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_27_181457) do
+ActiveRecord::Schema.define(version: 2020_01_29_160936) do
 
   create_table "bills", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.bigint "user_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_181457) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "friend_id"
     t.boolean "paid", default: false, null: false
+    t.datetime "paid_at"
     t.index ["bill_id"], name: "index_charges_on_bill_id"
     t.index ["friend_id"], name: "index_charges_on_friend_id"
   end
@@ -62,6 +63,7 @@ ActiveRecord::Schema.define(version: 2020_01_27_181457) do
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "credit_score", default: 100
     t.index ["user_id"], name: "index_friends_on_user_id"
   end
 

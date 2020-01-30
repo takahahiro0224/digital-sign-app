@@ -59,7 +59,7 @@
         </md-chip>
       </md-card-content>
     
-      <md-card-actions md-alignment="left">
+      <md-card-actions md-alignment="left" v-if="bill.paid==false">
         
         <div v-if="bill.friends.length > 1">
           <md-button v-on:click="selectMailUser=true">メール送信</md-button>
@@ -85,8 +85,8 @@
       <form class="md-layout" @submit="sendMail">
         <md-field>
           <label>送信先の選択</label>
-          <md-select v-model="sendMailParams.friends" multiple>
-            <md-option v-for="friend in bill.friends" v-bind:key="friend.charge_id" v-bind:value="friend.charge_id">{{ friend.name }}</md-option>
+          <md-select v-model="sendMailParams.charges" multiple>
+            <md-option v-for="friend in bill.friends.filter(friend=> friend.paid==false)" v-bind:key="friend.charge_id" v-bind:value="friend.charge_id">{{ friend.name }}</md-option>
           </md-select>
         </md-field>
 
@@ -114,7 +114,7 @@
 
       <md-table v-if="sentMails.length > 0">
         <md-table-row  v-for="mail in sentMails" :key="mail.id">
-          <md-table-cell>{{ mail.created_at.slice(0,16) }}</md-table-cell>
+          <md-table-cell>{{ mail.sent_at}}</md-table-cell>
           <md-table-cell>{{ mail.friend_name }}さんに {{ actionType[mail.action_type] }}を送信しました。 </md-table-cell>
         </md-table-row>
       </md-table>
