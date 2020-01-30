@@ -23,17 +23,17 @@
             <md-icon>more_vert</md-icon>
           </md-button>
           <md-menu-content>
-            <md-menu-item @click="selectMailUser=true">
+            <md-menu-item v-if="bill.paid==false" @click="selectMailUser=true">
               <span>メール送信</span>
               <md-icon>mail</md-icon>
             </md-menu-item>
 
-            <md-menu-item @click="setAutoMailView=true">
+            <md-menu-item v-if="bill.paid==false" @click="setAutoMailView=true">
               <span>自動メール設定</span>
               <md-icon>settings</md-icon>
             </md-menu-item>
              
-            <md-menu-item >
+            <md-menu-item @click="billEditView=true">
               <span>編集/Edit</span>
               <md-icon>create</md-icon>
             </md-menu-item>
@@ -124,12 +124,10 @@
         <p>ONにすると請求書に紐づけられた友人に返済のリマインドメール・アラートメールを自動で送信します。
         送信のタイミングはリマインドは返済日の１日前、アラートは返済期限が過ぎてから3日ごとに送られます。</p> 
       </div>
-
       <md-dialog-actions>
         <md-button class="md-primary" @click="updateBill">Save</md-button>
         <md-button class="md-primary" @click=" setAutoMailView= false">Cancel</md-button>
       </md-dialog-actions>
-
     </md-dialog>
 
     <md-dialog :md-active.sync="managePaidView" :md-click-outside-to-close=false>
@@ -139,6 +137,21 @@
           <md-button class="md-primary" @click="managePaidView=false">No</md-button>
         </md-dialog-actions>
     </md-dialog>
+
+    <md-dialog :md-active.sync="billEditView" :md-click-outside-to-close=false>
+        <md-dialog-title>請求メモの編集</md-dialog-title>  
+          <form class="md-layout" @submit="updateBill">
+            <md-field>
+              <label>Description</label>
+              <md-textarea v-model="billEditParams.description" style="white-space:pre-wrap; word-wrap:break-word;">
+              </md-textarea>
+            </md-field>
+            <md-dialog-actions>
+            <md-button class="md-primary" type="submit" @click="billEditView=false">Save</md-button>
+            <md-button class="md-primary" @click="billEditView=false">Cancel</md-button>
+         </md-dialog-actions>
+          </form>
+      </md-dialog>
 
 
 
@@ -194,6 +207,7 @@ export default {
       sentMails: [],
       selectMailUser: false,
       setAutoMailView: false,
+      billEditView: false,
       managePaidView: false,
       selectedFriend: false,
       mailFriends: [],
@@ -284,6 +298,9 @@ export default {
     text-align: center;
   }
   .dialog-message {
+    margin: 10px;
+  }
+  .md-layout {
     margin: 10px;
   }
 </style>
