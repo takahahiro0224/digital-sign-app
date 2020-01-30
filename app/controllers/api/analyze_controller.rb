@@ -5,7 +5,11 @@ module Api
       ir = MachineLearning::ImageRecognition.new
       text = ir.text_detection(text_detect_params['image_base64'].split(',')[1])
       res = {}
-      res['text'] = text
+      if text
+        res['text'] = text
+      else
+        res["message"] = "error"
+      end
 
       render json: res.to_json
     end
