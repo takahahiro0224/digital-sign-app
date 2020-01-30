@@ -106,7 +106,7 @@ const router = new VueRouter({
     { path: '/friends',
       neme: 'Friends',
       component: Friends },
-    { path: '/friens/:id(\\d+)',
+    { path: '/friends/:id(\\d+)',
       name: 'FriendDetailPage',
       component: FriendDetailPage }
   ]

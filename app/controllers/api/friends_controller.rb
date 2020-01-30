@@ -19,7 +19,7 @@ module Api
       res['charge_cnt'] = @friend.charges.size
       res['charge_paid_cnt'] = @friend.charges.select{|charge| charge.paid }.size
       if res['charge_paid_cnt'] > 0
-        res['paid_in_time_rate'] =  @friend.charges.select{|charge| charge.late}.size / res['charge_paid_cnt'] * 100
+        res['paid_in_time_rate'] =  (@friend.charges.select{|charge| charge.late}.size / res['charge_paid_cnt'] * 100).floor
       else
         res['paid_in_time_rate'] = nil
       end
