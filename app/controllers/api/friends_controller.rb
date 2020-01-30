@@ -17,9 +17,10 @@ module Api
     def show
       res = @friend.attributes
       res['charge_cnt'] = @friend.charges.size
-      res['charge_paid_cnt'] = @friend.charges.select{|charge| charge.paid }.size
+      paid_charges = @friend.charges.select{|charge| charge.paid }
+      res['charge_paid_cnt'] = paid_charges.size
       if res['charge_paid_cnt'] > 0
-        res['paid_in_time_rate'] =  (@friend.charges.select{|charge| charge.late}.size / res['charge_paid_cnt'] * 100).floor
+        res['paid_in_time_rate'] =  (paid_charges.select{|charge| !charge.late}.size / res['charge_paid_cnt'] * 100).floor
       else
         res['paid_in_time_rate'] = nil
       end
@@ -29,12 +30,18 @@ module Api
         charge.charge_actions.each do |action|
           response = action.charge_action_response
           if response
-            action_res << action.charge_action_response
+            r = action.charge_action_response.attributes
+            bill_id = action.charge.bill.id
+            r['bill_id'] = bill_id
+
+            action_res << r
           end
         end
       end
       
+      action_res = action_res.empty? ? action_res : action_res.sort_by{|r| r["created_at"] }.reverse
       res['actions'] = action_res
+
       render json: res.to_json
     end
 
@@ -51,7 +58,7 @@ module Api
       if @friend.update(friend_params)
         head :no_content
       else
-        render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @friend.errors.full_messages }, status: :unprocessable_entity
       end
     end
 

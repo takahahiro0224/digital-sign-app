@@ -92,7 +92,7 @@ module Api
       @charge = Charge.find(update_paid_params)
       @charge.paid = true
       @charge.paid_at = Time.current
-      if @charge.paid_at > (@charge.bill.paiment_due_date+1)
+      if @charge.paid_at > (@charge.bill.payment_due_date+1)
         @charge.late = true
       end
       @charge.save

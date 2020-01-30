@@ -16,11 +16,13 @@ class MailResponseController < ApplicationController
     response = ChargeActionResponse.new(response_params)
     response.charge_action = @charge_action
 
-    nl = MachineLearning::NaturalLanguage.new
-    nl_res = nl.analyze_sentiment(response.comment)
-    if nl_res
-      response.comment_score = nl_res[:score]
-      response.comment_magnitude = nl_res[:magnitude]
+    unless response.comment.blank?
+      nl = MachineLearning::NaturalLanguage.new
+      nl_res = nl.analyze_sentiment(response.comment)
+      if nl_res
+        response.comment_score = nl_res[:score]
+        response.comment_magnitude = nl_res[:magnitude]
+      end
     end
 
     @charge = @charge_action.charge

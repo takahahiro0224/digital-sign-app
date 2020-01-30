@@ -57,28 +57,28 @@
        <md-card-content>
          <div>
 
-         <md-content>
+         <md-content class="statical">
            <div>
            <p class="num">{{ friend.charge_cnt }}</p>
            <p>貸したかず</p>
            </div>
          </md-content>
   
-         <md-content>
+         <md-content class="statical">
            <div>
               <p class="num">{{ friend.charge_paid_cnt }}</p>
               <p>払われたかず</p>
             </div>
           
          </md-content>
-         <md-content>
+         <md-content class="statical">
           　<div>
               <p class="num" v-if="friend.paid_in_time_rate">{{ friend.paid_in_time_rate }}%</p>
               <p class="num" v-else>-</p>
               <p>期限内支払い率</p>
             </div>
          </md-content>
-         <md-content>
+         <md-content class="statical">
            <div>
               <p class="num">{{ friend.credit_score }}</p>
               <p>信用スコア</p>
@@ -90,6 +90,43 @@
     
 
   </md-card>
+  <md-table>
+    <md-table-toolbar>
+        <h4 class="md-title">メール送信に対するリアクション</h4>
+    </md-table-toolbar>
+
+    <md-table v-if="friend.actions.length > 0">
+      <md-table-row>
+        <md-table-cell>請求</md-table-cell>
+        <md-table-cell>Time</md-table-cell>
+        <md-table-cell>Status</md-table-cell>
+        <md-table-cell>Comment</md-table-cell>
+        <md-table-cell>Negative or Positive</md-table-cell>
+        <md-table-cell>Comment Emotion</md-table-cell>
+      </md-table-row>
+      <md-table-row v-for="action in friend.actions" :key="action.id">
+        <md-table-cell>
+          <md-button>
+           <router-link :to="{ name: 'BillDetailPage', params: { id: action.bill_id } }">
+            <md-icon>launch</md-icon>
+           </router-link>
+         </md-button>  
+        </md-table-cell>
+        <md-table-cell>{{ action.created_at.slice(0,16) }}</md-table-cell>
+        <md-table-cell>{{ paymentAbility[action.payment_ability] }}</md-table-cell>
+        <md-table-cell>{{ action.comment }}</md-table-cell>
+        <md-table-cell>{{ action.comment_score }}</md-table-cell>
+        <md-table-cell>{{ action.comment_magnitude }}</md-table-cell>
+      </md-table-row>
+    </md-table>
+
+    <md-table v-else>
+      <md-table-row>
+        <md-table-cell></md-table-cell>
+        <md-table-cell>リアクションはまだありません。</md-table-cell>
+      </md-table-row>    
+    </md-table>
+  </md-table>
 </div>
 </template>
 
@@ -104,12 +141,19 @@ Vue.use(VueMaterial)
 export default {
   data: function () {
     return {
-      friend: {},
+      friend: {
+        actions: []
+      },
       friendEditView: false,
       friendEditParams: {
         name: '',
         email: '',
         description: ''
+      },
+      paymentAbility: {
+        'fine': '大丈夫',
+        'late': '遅れそう',
+        'unknown': 'わからない'
       }
     }
   },
@@ -143,10 +187,10 @@ export default {
 
 <style lang="scss" scoped>
   .md-card {
-    max-width: 1000px;
+    //max-width: 1000px;
     margin: 4px;
   }
-  .md-content {
+  .statical {
     width: 150px;
     height: 100px;
     display: inline-flex;
@@ -157,5 +201,7 @@ export default {
     text-align: center;
     font-weight: bold;
   }
+  
+  
 </style>
 

@@ -36,7 +36,7 @@
          </div>
        </md-card-content>
        <md-card-actions>
-         <md-button class="md-icon-button" @click="deleteTarget = b.id; showModal = true">
+         <md-button>
            <router-link :to="{ name: 'BillDetailPage', params: { id: b.id } }">
            <md-icon>launch</md-icon>
            </router-link>
