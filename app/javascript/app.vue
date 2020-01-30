@@ -4,7 +4,10 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">Money Collect ver.β</span>
+      <router-link to="/">
+      <span class="md-title toBold">Money Collect ver.β</span>
+      </router-link>
+      
 
       <div class="md-toolbar-section-end">
         <md-button @click="showSidepanel = true">Account</md-button>
@@ -149,5 +152,8 @@ export default {
   }
   .md-list-item-text {
     color: black;
+  }
+  .toBold {
+    font-weight: bold;
   }
 </style>

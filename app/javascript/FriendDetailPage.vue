@@ -23,7 +23,7 @@
       <md-dialog :md-active.sync="friendEditView" :md-click-outside-to-close=false>
         <md-dialog-title>友達情報の編集</md-dialog-title>
         <md-card>
-          <form class="md-layout">
+          <form class="md-layout" @submit="updateFriend">
             <md-field>
               <label>名前</label>
               <md-input v-model="friendEditParams.name" type="text"></md-input>
@@ -47,6 +47,8 @@
         </md-card>
 
       </md-dialog>
+
+
 
     </md-card-header>
        <md-card-content>
@@ -125,6 +127,15 @@ export default {
           this.friendEditParams.description = response.data.description;
 
         })
+    },
+    updateFriend: function() {
+      this.friendEditView = false;
+      axios
+        .patch(`/api/users/${user.id}/friends/${this.friend.id}`, this.friendEditParams)
+        .then(response => {
+          this.$router.go({path: this.$router.currentRoute.path, force: true})
+        })
+
     }
   }
 }

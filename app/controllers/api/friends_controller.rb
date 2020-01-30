@@ -1,7 +1,7 @@
 module Api
   class FriendsController < ApplicationController
     before_action :set_user
-    before_action :set_friend, only: [:show]
+    before_action :set_friend, only: [:show, :update]
 
     # ActiveRecordのレコードが見つからなければ404 not foundを応答する
     rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -44,6 +44,14 @@ module Api
         render json: @friend, status: :created
       else
         render json: { errors: @friend.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    def update
+      if @friend.update(friend_params)
+        head :no_content
+      else
+        render json: { errors: @bill.errors.full_messages }, status: :unprocessable_entity
       end
     end
 

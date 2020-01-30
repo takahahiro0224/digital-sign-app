@@ -9,12 +9,14 @@
         </md-card-header-text>
 
         <md-card-media>
-          <h4>{{ f.credit_score }}</h4><span>score</span>
+          <h4>{{ f.credit_score }}</h4>
         </md-card-media>
       </md-card-header>
 
       <md-card-actions>
-        <md-button>Action</md-button>
+        <router-link :to="{ name: 'FriendDetailPage', params: {id: f.id} }">
+        <md-button>詳細</md-button>
+        </router-link>
       </md-card-actions>
     </md-card>
   </div>
