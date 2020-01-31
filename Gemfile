@@ -42,6 +42,7 @@ gem 'bcrypt'
 gem 'jquery-rails'
 gem 'materialize-sass'
 gem 'material_icons'
+gem 'slack-notifier'
 
 gem 'enum_help'
 group :development, :test do

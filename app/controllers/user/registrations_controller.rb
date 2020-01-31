@@ -14,10 +14,10 @@ class User::RegistrationsController < Devise::RegistrationsController
    def create
      build_resource(sign_up_params)
      if resource.save
-       sign_in_and_redirect dashbord_path
+       sign_in_and_redirect "/dashbord"
      else
        clean_up_passwords resource
-       render :new
+       render "new"
      end
    end
 
@@ -59,7 +59,7 @@ class User::RegistrationsController < Devise::RegistrationsController
 
   # The path used after sign up.
    def after_sign_up_path_for(resource)
-     "/user/#{current_user.id}"
+     
    end
 
   # The path used after sign up for inactive accounts.

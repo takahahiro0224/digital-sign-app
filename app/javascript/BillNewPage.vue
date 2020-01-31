@@ -3,7 +3,7 @@
     <form novalidate class="md-layout" @submit.prevent="createBill">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
-          <div class="md-title">請求メモ作成（Create a bill）</div>
+          <div class="md-title">請求メモ作成</div>
         </md-card-header>
 
         <md-card-content>
@@ -47,7 +47,7 @@
           </md-field>
 
           <md-button class="md-primary" @click="textDetectView=true">
-            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む (Image Recognition)
+            <md-icon>add_a_photo</md-icon>&nbsp;&nbsp;画像からテキストを読み込む
           </md-button>
       
 

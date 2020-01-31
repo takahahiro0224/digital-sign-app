@@ -1,2 +1,93 @@
-<%= link_to "ログイン", "/login" %>
-<%= link_to "新規登録", "/signup" %>
+<div>
+  <%= render partial: "nav" %>
+
+ 
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center white-text text-lighten-2 servie-title">Money Collect</h1>
+        <div class="row center">
+          <h5 class="header col s12 light">貸したお金を代わりに請求</h5>
+        </div>
+        <div class="row center">
+          <a href='/signup' class="btn-large waves-effect waves-light red accent-4">Sign Up</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><%= image_tag('backgroud1.jpg') %></div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">visibility</i></h2>
+            <h5 class="center">貸しているお金を可視化</h5>
+
+            <p class="light">請求書を作成し曖昧になりがちな誰かに貸しているお金を可視化します。
+                            シンプルなUIとわかりやすい操作ですぐに請求書を作成することができます。一つの請求書に
+                            複数人登録することができるので、飲み会の立替金の管理にも使えます。</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">laptop</i></h2>
+            <h5 class="center">気まずい催促をシステム化</h5>
+
+            <p class="light">気まずくなりがちな返済の催促をシステム化し、お金の貸し借りにおけるコミュニケーションコストを削減します。
+                            あなたの好きなタイミング、または設定された返済期限日に応じてシステムが自動でリマインド・アラートメールを送信することで
+                            返済漏れを防ぎます。</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center brown-text"><i class="material-icons">insert_chart_outlined</i></h2>
+            <h5 class="center">見えてくる個人の信用</h5>
+
+            <p class="light">友人のメッセージや借金の返済率・遅延率を利用し機械学習を使った独自のアルゴリズムによって、あなたの友人の信用度を
+                        スコアリングします。信用スコアによってお金を貸していい友達、貸してはダメな友達が見えてきます。</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="parallax-container valign-wrapper">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <div class="row center">
+          <h5 class="header col s12 light">By creating your bill, you will be able to manage your  money and remind your friends by sending an e-mail.</h5>
+        </div>
+      </div>
+    </div>
+    <div class="parallax"><%= image_tag('backgroud1.jpg') %></div>
+  </div>
+
+  <footer class="page-footer grey darken-4">
+    <div class="container">
+      <div class="row">
+        <div class="col l12 s12">
+           <h4><a class="white-text" href="https://github.com/takahahiro0224/digital-sign-app">GitHub <i class="fab fa-github-alt"></i></a></h4>
+          <p class="grey-text text-lighten-4"></p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      This apprication is created by Ruby on Rails and Vue.js
+      </div>
+    </div>
+  </footer>
+ 
+  </div>
+</html>
