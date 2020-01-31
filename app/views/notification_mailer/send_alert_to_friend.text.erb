@@ -11,7 +11,7 @@
 お支払い期限: <%= @bill.payment_due_date %>
 
 こちらのページで詳細をご確認ください
-localhost:3000/action/<%= @charge_action.token %>
+<%=root_url(only_path: false)%>action/<%= @charge_action.token %>
 
 
 Money Collect運営
