@@ -1,11 +1,11 @@
 if Rails.env.production?
   ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
-    address: 'smtp.gmail.com',
-    domain: 'gmail.com',
+    address: 'smtp.sendgrid.net',
+    domain: 'herokuapp.com',
     port: 587,
-    user_name: '',
-    password: '',
+    user_name: ENV['SENDGRID_USERNAME'],
+    password: ENV['SENDGRID_PASSWORD'],,
     authentication: 'plain',
     enable_starttls_auto: true
   }

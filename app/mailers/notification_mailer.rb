@@ -1,5 +1,5 @@
 class NotificationMailer < ApplicationMailer
-  default from: "hogehoge@example.com"
+  default from: "info@moneycollect.tokyo"
 
   def send_mail_to_friend(friend, bill, action)
     @friend = friend
