@@ -1,6 +1,5 @@
 module Api
   class UsersController < ApplicationController
-    # 管理者としてで使うかも〜
     before_action :set_user, only: [:show]
 
     # GET /api/users
