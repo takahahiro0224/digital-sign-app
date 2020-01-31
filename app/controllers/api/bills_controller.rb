@@ -115,14 +115,14 @@ module Api
       head :no_content
     end
 
-    # TODO: charge_actionの取り出し方を変える
     def send_mail
-      @bill.charges.each do |charge|
-        if send_mail_params.include?(charge.id)
-          charge.charge_actions.new(action_type: 'notice').save
-          charge_action = charge.charge_actions.last
-          NotificationMailer.send_mail_to_friend(charge.friend, @bill, charge_action).deliver
-        end
+      charges = Charge.where(id: send_mail_params)
+      charges.each do |charge|
+        action =ChargeAction.new(action_type: 'notice')
+        action.charge = charge
+        action.save
+
+        NotificationMailer.send_mail_to_friend(charge.friend, @bill, action).deliver 
       end
       render json: { status: "ok" }
     end
@@ -163,7 +163,7 @@ module Api
       end
 
       def bill_params
-        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :created_at, :updated_at)
+        params.require(:bill).permit(:id, :user_id, :category, :description, :price_cents, :currency, :payment_due_date, :paid, :auto_mail, :created_at, :updated_at)
       end
   end
 end

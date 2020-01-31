@@ -1,15 +1,18 @@
 <template>
    <div>
+     <h4>{{ username }}さんの請求</h4>
     <div v-if="bills.length > 0">
     <md-card v-for="b in bills" :key="b.id">
        <md-card-header>
-         <div class="md-title">{{ categories[b.category]}}</div>
-         <div v-if="b.paid">
-              <b>支払い済み</b>
+         <div>
+          <div class="md-title title-content">{{ categories[b.category]}}</div>&nbsp;&nbsp;
+          <div class="title-content" v-if="b.paid">
+             <b>支払い済み</b>
           </div>
-          <div v-else>
-            <b class=late>支払い未完了</b>
+          <div v-else class="title-content">
+             <b class=late>支払い未完了</b>
           </div>
+        </div>
        </md-card-header>
        <md-card-content> 
         <md-chip class="md-accent" v-for="friend in b.friends.filter(friend=> friend.paid==false)" :key="friend.charge_id">
@@ -76,6 +79,7 @@ export default {
   },
   data: function () {
     return {
+      username: username,
       emptyState: false,
       bills: [
       ],
@@ -145,12 +149,18 @@ p {
 .late {
   color: red;
 }
-[v-cloak] {
-      display: none;
-    }
+
 #no-show {
   display: none;
 }
+.title-content {
+   display: inline-flex;
+ }
+
+h4 {
+  text-align: center;
+}
+ 
 
 
 </style>

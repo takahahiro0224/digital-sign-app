@@ -143,13 +143,15 @@ import clipboard from 'clipboard-copy';
 import loadImage from 'blueimp-load-image';
 
 Vue.use(VueMaterial)
+let now = new Date()
 export default {
   data () {
     return {
       params: {
         bill: {
           price_cents: '',
-          currency: 'JPY'
+          currency: 'JPY',
+          payment_due_date: now
         },
         friends: []
       },
