@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: digital_sign_app_production
-  username: digital_sign_app
-  password: <%= ENV['DIGITAL_SIGN_APP_DATABASE_PASSWORD'] %>
+   adapter: postgresql
+   encoding: unicode
+   pool: 5
