@@ -1,8 +1,10 @@
 <%= @friend.name %> 様
 
-お金の請求管理サービスMoney Collect運営です。
+お金の請求管理サービスMoney Collect運営でございます。
 この度、ご友人の<%= @user.username %>さんからの、請求のご依頼を
 承っておりますのでお知らせします。
+返済期限日が過ぎておりますので至急<%= @user.username %>さん
+までお支払いただくようお願いします。
 
 名目: <%= @bill.category %>
 金額: <%= @bill.price_cents %>円

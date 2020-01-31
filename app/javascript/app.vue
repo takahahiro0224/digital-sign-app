@@ -121,9 +121,6 @@ Vue.use(VueRouter)
 Vue.use(VueMaterial)
 export default {
    router,
-   props: {
-     user_id: { type: String, default: null},
-   },
    name: 'Temporary',
     data: () => ({
       showNavigation: false,

@@ -12,6 +12,9 @@ class Bill < ApplicationRecord
   def set_payment_due_date
     if payment_due_date.nil?
       self.payment_due_date = Date.current + 30
+    else
+      # jsのDatepickerの使用による対応
+      self.payment_due_date += 1
     end
   end
 end
