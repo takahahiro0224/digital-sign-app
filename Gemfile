@@ -9,7 +9,7 @@ gem 'rails', '~> 6.0.1'
 gem 'mysql2', '>= 0.4.4', group: %w(test development), require: false
 gem 'pg', '~> 0.19.0', group: :production, require: false
 # Use Puma as the app server
-gem 'puma', '~> 4.1'
+gem 'puma', '~> 4.3'
 # Use SCSS for stylesheets
 gem 'sassc', '2.1.0'
 gem 'sass-rails', '< 6'
